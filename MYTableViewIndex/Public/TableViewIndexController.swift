@@ -64,13 +64,13 @@ public class TableViewIndexController : NSObject {
     
     // MARK: - Keyboard
     
-    func observeKeyboard() {
+    private func observeKeyboard() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: UIKeyboardWillShowNotification, object: nil)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: UIKeyboardWillHideNotification, object: nil)
     }
     
-    func handleKeyboardNotification(note: NSNotification) {
+    @objc private func handleKeyboardNotification(note: NSNotification) {
         guard let tableView = tableView, parentView = tableView.superview, userInfo = note.userInfo else {
             return;
         }
