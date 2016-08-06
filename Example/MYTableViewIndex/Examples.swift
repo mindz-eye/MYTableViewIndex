@@ -104,7 +104,12 @@ class CustomBackgroundExample : BasicExample {
         
         tableIndexController.tableViewIndex.backgroundView = backgroundView
         tableIndexController.tableViewIndex.indexInset = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
-        tableIndexController.indexOffset = UIOffset(horizontal: -3, vertical: 0)
+        
+        tableIndexController.layouter = { tableView, tableIndex in
+            var frame = tableIndex.frame
+            frame.origin = CGPoint(x: frame.origin.x - 3, y: frame.origin.y)
+            tableIndex.frame = frame
+        };
         
         tableIndexController.tableViewIndex.addTarget(backgroundView, action: #selector(BackgroundView.pressed(_:)),
                                                       forControlEvents: .TouchDown)

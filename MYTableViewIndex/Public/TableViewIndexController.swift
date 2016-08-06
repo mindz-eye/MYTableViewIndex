@@ -12,8 +12,6 @@ public class TableViewIndexController : NSObject {
     
     public let tableViewIndex = TableViewIndex()
     
-    public var indexOffset = UIOffset()
-    
     public var layouter: ((tableView: UITableView, tableIndex: TableViewIndex) -> Void)?
     
     private(set) weak var tableView: UITableView?
@@ -123,14 +121,11 @@ public class TableViewIndexController : NSObject {
     private func layoutInRect(rect: CGRect) {
         let tableIndexSize = tableViewIndex.sizeThatFits(rect.size)
         
-        var frame = CGRect(x: rect.right - tableIndexSize.width + indexOffset.horizontal,
-                           y: rect.y + indexOffset.vertical,
-                           width: tableIndexSize.width,
-                           height: tableIndexSize.height)
-        if hidden {
-            frame.right = frame.right + tableViewIndex.backgroundRect().width - indexOffset.horizontal
-        }
+        var frame = CGRect(origin: CGPoint(x: rect.right - tableIndexSize.width, y: rect.y), size: tableIndexSize)
         
+        if hidden {
+            frame.right = frame.right + tableViewIndex.backgroundRect().width
+        }
         tableViewIndex.frame = frame
         
         if let layouter = layouter, tableView = tableView {
