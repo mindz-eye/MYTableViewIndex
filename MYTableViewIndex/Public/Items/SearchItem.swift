@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Use this class to get a magnifying glass icon similar to UITableViewIndexSearch.
 public class SearchItem : UIView {
     
     override public init(frame: CGRect) {
@@ -31,6 +32,7 @@ public class SearchItem : UIView {
         
         let targetRect = rect.insetBy(dx: xMargin, dy: yMargin)
         
+        // The constants below are fine tuned to match the Apple's UITableViewIndexSearch icon
         let radius = targetRect.width / 3.1
         let lineWidth = targetRect.width / 6.0
         

@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Use this class for displaying text based items.
 public class StringItem : UILabel {
     
     public init(text: String) {
@@ -51,6 +52,11 @@ public class StringItem : UILabel {
         }
     }
     
+    /// Handle # sign in a special way to match native index appearance. It's not clear why
+    /// Apple uses a bitmap instead of a font glyph for this character - most likely due to
+    /// the blurry look of the symbol on non-retina devices. Obviously, this custom shape
+    /// drawing only makes for default font. Otherwise we would have to support various font
+    /// faces, styles, etc.
     private func shouldDrawNumberSign() -> Bool {
         return text == "#" && font.my_isEqual(StyleDefaults.font)
     }
@@ -104,6 +110,9 @@ public class StringItem : UILabel {
         CGContextAddLineToPoint(context, x4, y4);
         CGContextStrokePath(context);
         
+        /// Why do I use image context instead of direct drawing into the layer? Fair question - I just
+        /// didn't get how to draw the exact copy of Apple's `#` bitmap on 3x devices. This little hack -
+        /// drawing at 2x and than upscaling the image - gives an acceptable result.
         if let image = UIGraphicsGetImageFromCurrentImageContext() {
             UIGraphicsEndImageContext()
             var imageRect = CGRect(origin: CGPoint(), size: image.size)

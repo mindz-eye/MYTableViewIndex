@@ -8,12 +8,19 @@
 
 import UIKit
 
+/// Protocol for customizing index items behavior. Implicitly confirmed by all UIView subclasses.
 @objc public protocol IndexItem {
     
+    /// Returns the size that best fits the specified size.
     func sizeThatFits(size: CGSize) -> CGSize
     
+    /// Indicates that the closest neighborhood of this item can not be truncated. The flag is only
+    /// checked if the receiver is the first or the last item in index sequence.
+    /// The method is used to mimic native index behavior. E.g, UITableView never truncates items
+    /// after search item and before # sign.
     func blocksEdgeTruncation() -> Bool
     
+    /// Implement this method to apply style attributes of table index to the item.
     func applyStyle(style: Style)
 }
 

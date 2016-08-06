@@ -8,7 +8,7 @@
 
 import UIKit
 
-
+/// The item matches Apple's `•` symbols used as truncation indicators. Used it by default in table index.
 public class TruncationItem : UIView {
     
     override public init(frame: CGRect) {

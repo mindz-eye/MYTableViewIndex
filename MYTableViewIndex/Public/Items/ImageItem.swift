@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Use this class for displaying image based items.
 public class ImageItem : UIImageView {
     
     public var contentInset = UIEdgeInsets()
