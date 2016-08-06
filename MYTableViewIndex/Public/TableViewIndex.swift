@@ -10,14 +10,18 @@ import UIKit
 
 public class TableViewIndex : UIControl {
     
+    /// Data source for the table index object. See TableViewIndexDataSource protocol for details.
     @IBOutlet public weak var dataSource: TableViewIndexDataSource? {
         didSet {
             reloadData()
         }
     }
     
+    /// Delegate for the table index object. See TableViewIndexDelegate protocol for details.
     @IBOutlet public weak var delegate: TableViewIndexDelegate?
     
+    /// Background view is displayed below the index items and can be set to any UIView.
+    /// If not set or was set to nil, creates a default view which mimics a system index appearance.
     public var backgroundView: UIView? {
         didSet {
             if let view = backgroundView {
@@ -28,29 +32,48 @@ public class TableViewIndex : UIControl {
         }
     }
     
+    /// Font for the index view items. If not set or set to nil, uses a default font which is chosen to
+    /// match system appearance.
     public var font: UIFont? {
         didSet {
             updateStyle()
         }
     }
     
+    /// Vertical spacing between the items. Equals to 1 point by default to match system appearance.
     public var itemSpacing: CGFloat? {
         didSet {
             updateStyle()
         }
     }
     
+    /// The distance that index items are inset from the enclosing background view. The property
+    /// doesn't change the position of index items. Instead, it changes size of the background view
+    /// to match the inset. In other words, the background view "wraps" the index content.
+    /// Set inset value to CGFloat.max to make background view fill all the available space on that side.
     public var indexInset = UIEdgeInsets(top: CGFloat.max, left: pixelScale(), bottom: CGFloat.max, right: pixelScale()) {
         didSet {
             setNeedsLayout()
         }
     }
-    
+
+    /// The distance that index items are shifted inside the enclosing background view. The property
+    /// changes the position of items and doesn't affect the size of the background view.
     public var indexOffset = UIOffset(horizontal: 0.0, vertical: 1.0) {
         didSet {
             setNeedsLayout()
         }
     }
+
+    /// The array of all items provided by data source.
+    public private(set) var items: [UIView] = []
+    
+    /// The array of items currently displayed by table index.
+    public var displayedItems: [UIView] {
+        return indexView.items
+    }
+    
+    private var truncation: Truncation<UIView>?
     
     private var style: Style! {
         didSet {
@@ -64,15 +87,7 @@ public class TableViewIndex : UIControl {
         let view = IndexView()
         self.addSubview(view)
         return view
-    }()
-    
-    public private(set) var items: [UIView] = []
-    
-    public var displayedItems: [UIView] {
-        return indexView.items
-    }
-    
-    private var truncation: Truncation<UIView>?
+        }()
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -104,6 +119,8 @@ public class TableViewIndex : UIControl {
     
     // MARK: - Updates
     
+    /// Forces table index to reload its items. This causes table index to discard its current items
+    /// and refill itself from the data source.
     public func reloadData() {
         items = queryItems()
         truncation = queryTruncation()
@@ -122,9 +139,12 @@ public class TableViewIndex : UIControl {
             return nil
         }
         var truncationItemClass = TruncationItem.self
+        
+        // Check if the data source provides a custom class for truncation item
         if dataSource.respondsToSelector(#selector(TableViewIndexDataSource.truncationItemClass(forTableViewIndex:))) {
             truncationItemClass = dataSource.truncationItemClass!(forTableViewIndex: self) as! TruncationItem.Type
         }
+        // Now we now the item class and can create truncation items on demand
         return Truncation(items: items, truncationItemFactory: {
             return truncationItemClass.init()
         })
@@ -141,6 +161,9 @@ public class TableViewIndex : UIControl {
         }
     }
     
+    /// Calculates a set of items suitable for displaying in the current frame. If there is not enough space
+    /// to display all the provided items, some items are replaced with a special truncation item. To
+    /// customize the class of truncation item, use the corresponding TableViewIndexDataSource method.
     private func updateVisibleItems() {
         let availableSize = CGSize(width: bounds.width, height: bounds.height)
         
@@ -153,6 +176,7 @@ public class TableViewIndex : UIControl {
     
     // MARK: - Layout
     
+    /// Returns a drawing area for the index items.
     public func indexRect() -> CGRect {
         var frame = CGRect(origin: CGPoint(), size: indexView.sizeThatFits(bounds.size)).integral
         frame.right = bounds.right - indexInset.right + indexOffset.horizontal
@@ -160,6 +184,7 @@ public class TableViewIndex : UIControl {
         return frame
     }
     
+    /// Returns a drawing area for the background view.
     public func backgroundRect() -> CGRect {
         let indexFrame = indexRect()
         
@@ -170,6 +195,7 @@ public class TableViewIndex : UIControl {
                           size: CGSize(width: width, height: height))
         rect.centerY = indexFrame.centerY
         
+        // Check if background view should fill all the available space
         if indexInset.top == CGFloat.max {
             rect.top = 0.0
         }
@@ -261,14 +287,24 @@ public class TableViewIndex : UIControl {
 
 @objc public protocol TableViewIndexDataSource : NSObjectProtocol {
     
+    /// Provides a set of items to display in the table index. Default set of views tuned for
+    /// displaying text, images, search indicator and truncation items are provided.
+    /// Can be any view basically, but please avoid passing UITableViews :)
+    /// See IndexItem protocol for item customization points.
     func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView]
     
+    /// Provides a class for truncation items. Truncation items are used when there is not enough
+    /// space for displaying all the items provided by the data source. If this happens, table index
+    /// omits some of the items from being displayed and inserts truncation items instead.
+    /// By default table index uses TruncationItem class, tuned to match native index apperance.
     optional func truncationItemClass(forTableViewIndex tableViewIndex: TableViewIndex) -> AnyClass
 }
 
 
 @objc public protocol TableViewIndexDelegate : NSObjectProtocol {
     
+    /// Called as a result of recognizing an index touch. Can be used to scroll table view to
+    /// the corresponding section.
     optional func tableViewIndex(tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int)
 }
 
