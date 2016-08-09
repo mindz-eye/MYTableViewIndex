@@ -11,44 +11,8 @@ import UIKit
 class IndexView : UIView {
         
     var items = [UIView]() {
-        willSet {
-            for item in items {
-                if newValue.contains(item) {
-                    continue
-                }
-                CATransaction.setCompletionBlock({
-                    item.alpha = 1
-                    
-                    if (!self.items.contains(item)) {
-                        item.removeFromSuperview()
-                    }
-                })
-                item.alpha = 0
-            }
-        }
-        
         didSet {
-            updateLayout()
-            
-            guard var layout = layout else {
-                return
-            }
-            layout.layoutInRect(bounds)
-            
-            for (index, item) in items.enumerate() {
-                if oldValue.contains(item) {
-                    continue
-                }
-                addSubview(item)
-                
-                UIView.performWithoutAnimation({
-                    if (layout.itemFrames.count > index) {
-                        item.frame = layout.itemFrames[index]
-                        item.alpha = 0
-                    }
-                })
-                item.alpha = 1
-            }
+            updateWithItems(items, oldItems: oldValue)
         }
     }
     
@@ -93,6 +57,46 @@ class IndexView : UIView {
             layout = Layout(items: items, style: style!)
             setNeedsLayout()
         }
+    }
+    
+    private func updateWithItems(items: [UIView], oldItems: [UIView]) {
+        for item in oldItems where !items.contains(item) {
+            removeItem(item)
+        }
+        
+        updateLayout()
+        
+        guard var layout = layout else {
+            return
+        }
+        layout.layoutInRect(bounds)
+        
+        for (index, item) in items.enumerate() where !oldItems.contains(item) {
+            addItem(item, withFrame: layout.itemFrames[index])
+        }
+    }
+    
+    private func removeItem(item: UIView) {
+        // A little trickery to make item removal look nice when performed inside animation block
+        CATransaction.setCompletionBlock {
+            item.alpha = 1
+            
+            if (!self.items.contains(item)) {
+                item.removeFromSuperview()
+            }
+        }
+        item.alpha = 0
+    }
+    
+    private func addItem(item: UIView, withFrame frame: CGRect) {
+        addSubview(item)
+        
+        // Make item appear with nice fade in animation when layout is called inside animation block
+        UIView.performWithoutAnimation {
+            item.frame = frame
+            item.alpha = 0
+        }
+        item.alpha = 1
     }
     
     override func intrinsicContentSize() -> CGSize {
