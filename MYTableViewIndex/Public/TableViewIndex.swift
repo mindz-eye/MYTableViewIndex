@@ -162,7 +162,7 @@ public class TableViewIndex : UIControl {
     }
     
     /// Calculates a set of items suitable for displaying in the current frame. If there is not enough space
-    /// to display all the provided items, some items are replaced with a special truncation item. To
+    /// to display all the provided items, some of the items are replaced with a special truncation item. To
     /// customize the class of truncation item, use the corresponding TableViewIndexDataSource method.
     private func updateVisibleItems() {
         let availableSize = CGSize(width: bounds.width, height: bounds.height)

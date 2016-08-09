@@ -21,6 +21,7 @@ public class StringItem : UILabel {
     }
     
     public override func blocksEdgeTruncation() -> Bool {
+        // UITableView never truncates items before # sign.
         return text == "#"
     }
     
@@ -38,6 +39,7 @@ public class StringItem : UILabel {
     
     public override func sizeThatFits(size: CGSize) -> CGSize {
         if shouldDrawNumberSign() {
+            // Hardcoded values are safe to use here since we draw # sign for one font size only
             return CGSize(width: 8.0, height: 14.0)
         } else {
             return super.sizeThatFits(size)
@@ -67,12 +69,16 @@ public class StringItem : UILabel {
         
         let scale = UIScreen.mainScreen().scale;
         
+        // Why do I use image context instead of direct drawing into the layer? Fair question - I just
+        // didn't get how to draw the exact copy of Apple's `#` bitmap on 3x devices. This little hack -
+        // drawing at 2x and than upscaling the image - gives an acceptable result.
         UIGraphicsBeginImageContextWithOptions(rect.size, false, min(scale, 2.0))
         
         let context = UIGraphicsGetCurrentContext()
         
         CGContextSetStrokeColorWithColor(context, textColor.CGColor)
         
+        // The constants below are carefully tuned to match the Apple's "pound sign" icon
         let horMargin: CGFloat = roundToPixelBorder(1.5)
         let verMargin: CGFloat = roundToPixelBorder(2.5)
         
@@ -110,9 +116,6 @@ public class StringItem : UILabel {
         CGContextAddLineToPoint(context, x4, y4);
         CGContextStrokePath(context);
         
-        /// Why do I use image context instead of direct drawing into the layer? Fair question - I just
-        /// didn't get how to draw the exact copy of Apple's `#` bitmap on 3x devices. This little hack -
-        /// drawing at 2x and than upscaling the image - gives an acceptable result.
         if let image = UIGraphicsGetImageFromCurrentImageContext() {
             UIGraphicsEndImageContext()
             var imageRect = CGRect(origin: CGPoint(), size: image.size)
