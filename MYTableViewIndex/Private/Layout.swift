@@ -24,7 +24,7 @@ struct Layout {
         
         var frames = [CGRect]()
         
-        for (index, item) in items.enumerate() {
+        for (index, _) in items.enumerate() {
             var itemRect = CGRect(origin: CGPoint(x: 0, y: yPos), size: metrics.itemSizes[index])
             itemRect.centerX = rect.centerX
             itemRect.origin = roundToPixelBorder(itemRect.origin)
