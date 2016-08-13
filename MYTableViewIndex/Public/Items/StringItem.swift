@@ -9,6 +9,7 @@
 import UIKit
 
 /// Use this class for displaying text based items.
+@objc (MYStringItem)
 public class StringItem : UILabel {
     
     public init(text: String) {

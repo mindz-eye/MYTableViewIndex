@@ -9,7 +9,8 @@
 import UIKit
 
 /// Protocol for customizing index items behavior. Implicitly confirmed by all UIView subclasses.
-@objc public protocol IndexItem {
+@objc (MYIndexItem)
+public protocol IndexItem {
     
     /// Returns the size that best fits the specified size.
     func sizeThatFits(size: CGSize) -> CGSize

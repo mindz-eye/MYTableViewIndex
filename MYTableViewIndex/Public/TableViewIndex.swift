@@ -8,6 +8,7 @@
 
 import UIKit
 
+@objc(MYTableViewIndex)
 public class TableViewIndex : UIControl {
     
     /// Data source for the table index object. See TableViewIndexDataSource protocol for details.
@@ -285,7 +286,8 @@ public class TableViewIndex : UIControl {
 
 // MARK: - Protocols
 
-@objc public protocol TableViewIndexDataSource : NSObjectProtocol {
+@objc(MYTableViewIndexDataSource)
+public protocol TableViewIndexDataSource : NSObjectProtocol {
     
     /// Provides a set of items to display in the table index. Default set of views tuned for
     /// displaying text, images, search indicator and truncation items are provided.
@@ -301,7 +303,8 @@ public class TableViewIndex : UIControl {
 }
 
 
-@objc public protocol TableViewIndexDelegate : NSObjectProtocol {
+@objc(MYTableViewIndexDelegate)
+public protocol TableViewIndexDelegate : NSObjectProtocol {
     
     /// Called as a result of recognizing an index touch. Can be used to scroll table view to
     /// the corresponding section.
