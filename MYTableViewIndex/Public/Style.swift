@@ -8,7 +8,8 @@
 
 import UIKit
 
-@objc public protocol Style {
+@objc(MYTableViewIndexStyle)
+public protocol Style {
     
     var font: UIFont { get }
     

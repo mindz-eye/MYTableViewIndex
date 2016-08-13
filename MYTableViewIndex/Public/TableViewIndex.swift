@@ -8,6 +8,7 @@
 
 import UIKit
 
+@objc(MYTableViewIndex)
 public class TableViewIndex : UIControl {
     
     /// Data source for the table index object. See TableViewIndexDataSource protocol for details.
