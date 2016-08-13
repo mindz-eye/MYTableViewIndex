@@ -108,9 +108,21 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 MYTableViewIndex is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
-```ruby
-pod "MYTableViewIndex"
-```
+````ruby
+pod 'MYTableViewIndex'
+````
+
+## Objective-C
+
+All public classes of MYTableViewIndex are exposed to Objective-C, just import the library module:
+````objective-c
+@import MYTableViewIndex;
+````
+
+And don't forget to enable frameworks in your Podfile:
+````ruby
+use_frameworks!
+````
 
 ## Author
 
