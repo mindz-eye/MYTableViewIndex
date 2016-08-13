@@ -19,7 +19,7 @@ struct Truncation<T: IndexItem> {
     }
     
     func truncate(forHeight height: CGFloat, style: Style) -> [T] {
-        let metrics = Metrics(items: items.map{ $0 as! IndexItem }, style: style)
+        let metrics = Metrics(items: items, style: style)
         
         if (metrics.size.height <= height || height <= 0.0) {
             return items
