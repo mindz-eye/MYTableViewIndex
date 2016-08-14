@@ -20,9 +20,9 @@ public class TableViewIndexController : NSObject {
     private(set) weak var tableView: UITableView?
     
     private enum ObservedKeyPaths: String {
-        case contentInset = "contentInset"
-        case bounds = "bounds"
-        case center = "center"
+        case contentInset
+        case bounds
+        case center
     }
     
     private var observer: KeyValueObserver?
