@@ -26,7 +26,7 @@ final class KeyValueObserver : NSObject {
         observe()
         
         object.my_deinitHandler = {[weak self, unowned(unsafe) object] in
-            self?.unobserveObject(object)
+            self?.unobserve(object)
         }
     }
     
@@ -46,11 +46,11 @@ final class KeyValueObserver : NSObject {
     
     private func unobserve() {
         if let observed = observedObject {
-            unobserveObject(observed)
+            unobserve(observed)
         }
     }
     
-    private func unobserveObject(_ object: NSObject) {
+    private func unobserve(_ object: NSObject) {
         if !observing {
             return
         }

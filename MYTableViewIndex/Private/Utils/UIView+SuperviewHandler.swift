@@ -19,8 +19,7 @@ extension UIView {
         set {
             setAssociatedObject(self, key: &didMoveToSuperviewHandlerKey, value: newValue, policy: .OBJC_ASSOCIATION_COPY)
 
-            swizzleSelectorOnce(#selector(UIView.didMoveToSuperview), withSelector: #selector(UIView.my_didMoveToSuperview),
-                                forClass: UIView.self)
+            swizzleOnce(#selector(UIView.didMoveToSuperview), with: #selector(UIView.my_didMoveToSuperview), for: UIView.self)
             
             if let handler = newValue, let superview = superview {
                 handler(superview)
@@ -36,5 +35,4 @@ extension UIView {
         }
     }
 }
-
 

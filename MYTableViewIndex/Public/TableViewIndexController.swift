@@ -52,13 +52,13 @@ public class TableViewIndexController : NSObject {
                         ObservedKeyPaths.contentInset.rawValue]
         
         observer = KeyValueObserver(object: tableView, keyPaths: keyPaths, handler: {[weak self] keyPath in
-            self?.layoutUsingTableInset()
+            self?.layout()
         })
         
         tableView.my_didMoveToSuperviewHandler = { [weak self] superview in
             if let superview = superview, let tableIndex = self?.tableViewIndex {
                 superview.addSubview(tableIndex)
-                self?.layoutUsingTableInset()
+                self?.layout()
             } else {
                 self?.tableViewIndex.removeFromSuperview()
             }
@@ -90,25 +90,25 @@ public class TableViewIndexController : NSObject {
             UIView.animate(withDuration: duration, animations: {
                 UIView.setAnimationCurve(UIViewAnimationCurve(rawValue: curve)!)
 
-                self.layout(withInset: inset)
+                self.layout(with: inset)
                 parentView.layoutIfNeeded()
                 
                 }, completion: { _ in
-                    self.layoutUsingTableInset()
+                    self.layout()
             })
         }
     }
     
     // MARK: - Layout
     
-    private func layoutUsingTableInset() {
+    private func layout() {
         guard let tableView = tableView else {
             return
         }
-        layout(withInset: tableView.contentInset)
+        layout(with: tableView.contentInset)
     }
     
-    private func layout(withInset inset: UIEdgeInsets) {
+    private func layout(with inset: UIEdgeInsets) {
         guard let tableView = tableView else {
             return
         }
@@ -118,10 +118,10 @@ public class TableViewIndexController : NSObject {
         let width = tableFrame.width - (inset.left + inset.right)
         let height = tableFrame.height - (inset.top + inset.bottom)
         
-        layoutInRect(CGRect(x: tableFrame.x, y: tableFrame.y + inset.top, width: width, height: height))
+        layout(in: CGRect(x: tableFrame.x, y: tableFrame.y + inset.top, width: width, height: height))
     }
     
-    private func layoutInRect(_ rect: CGRect) {
+    private func layout(in rect: CGRect) {
         let tableIndexSize = tableViewIndex.sizeThatFits(rect.size)
         
         var frame = CGRect(origin: CGPoint(x: rect.right - tableIndexSize.width, y: rect.y), size: tableIndexSize)
@@ -176,7 +176,7 @@ public class TableViewIndexController : NSObject {
             tableViewIndex.isHidden = false
         }        
         UIView.animate(withDuration: 0.25, animations: {
-            self.layoutUsingTableInset()
+            self.layout()
             
             if let animations = alongsideAnimations {
                 animations()

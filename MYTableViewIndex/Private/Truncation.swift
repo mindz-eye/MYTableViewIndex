@@ -44,11 +44,11 @@ struct Truncation<T: IndexItem> {
             }
         }
         
-        let linesAvailable = calculateAvailableLines(items: itemsToTruncate, metrics: metrics, height: availableHeight)
+        let linesAvailable = calculateAvailableLines(for: itemsToTruncate, metrics: metrics, height: availableHeight)
         if (linesAvailable <= 0) {
             return []
         }
-        var result = doTruncateItems(itemsToTruncate, linesAvailable: linesAvailable)
+        var result = doTruncate(itemsToTruncate, linesAvailable: linesAvailable)
 
         if shouldPrependFirstItem {
             result.insert(items[0], at: 0)
@@ -59,7 +59,7 @@ struct Truncation<T: IndexItem> {
         return result
     }
     
-    private func calculateAvailableLines(items: [T], metrics: Metrics, height: CGFloat) -> Int {
+    private func calculateAvailableLines(for items: [T], metrics: Metrics, height: CGFloat) -> Int {
         let lineHeight = metrics.medianSize.height
         let truncationHeight = truncationItemFactory().sizeThatFits(metrics.style.font.my_boundingSize()).height
         
@@ -82,7 +82,7 @@ struct Truncation<T: IndexItem> {
         return linesAvailable
     }
     
-    private func doTruncateItems(_ items: [T], linesAvailable: Int) -> [T] {
+    private func doTruncate(_ items: [T], linesAvailable: Int) -> [T] {
         var result = [T]()
         
         let step = Double(items.count) / Double(linesAvailable)

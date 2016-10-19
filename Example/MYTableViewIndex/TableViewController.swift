@@ -93,7 +93,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
     
     // MARK: - TableViewIndex
     
-    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int) {
+    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) {
         if item is SearchItem {
             tableView.scrollRectToVisible(searchController.searchBar.frame, animated: false)
         } else {

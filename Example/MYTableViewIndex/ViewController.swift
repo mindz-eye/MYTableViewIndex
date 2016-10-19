@@ -98,7 +98,7 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
     
     // MARK: - TableViewIndex
     
-    func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView] {
+    func indexItems(for tableViewIndex: TableViewIndex) -> [UIView] {
         var items = UILocalizedIndexedCollation.current().sectionIndexTitles.map{ title -> UIView in
             return StringItem(text: title)
         }
@@ -108,7 +108,7 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
         return items
     }
     
-    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int) {
+    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) {
         if item is SearchItem {
             tableView.scrollRectToVisible(searchController.searchBar.frame, animated: false)
         } else {

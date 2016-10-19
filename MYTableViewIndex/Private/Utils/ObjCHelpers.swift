@@ -43,17 +43,17 @@ func getAssociatedObject<T>(_ object: AnyObject, key: UnsafeRawPointer) -> T? {
 
 // MARK: - Swizzling
 
-func swizzleSelector(_ selector: Selector, withSelector: Selector, forClass: AnyClass) {
-    let originalMethod = class_getInstanceMethod(forClass, selector)
-    let swizzledMethod = class_getInstanceMethod(forClass, withSelector)
+func swizzle(_ selector: Selector, with withSelector: Selector, for clazz: AnyClass) {
+    let originalMethod = class_getInstanceMethod(clazz, selector)
+    let swizzledMethod = class_getInstanceMethod(clazz, withSelector)
     method_exchangeImplementations(originalMethod, swizzledMethod)
 }
 
 var swizzled = false
 
-func swizzleSelectorOnce(_ selector: Selector, withSelector: Selector, forClass: AnyClass) {
+func swizzleOnce(_ selector: Selector, with withSelector: Selector, for clazz: AnyClass) {
     if (!swizzled) {
-        swizzleSelector(selector, withSelector: withSelector, forClass: forClass)
+        swizzle(selector, with: withSelector, for: clazz)
         swizzled = true
     }
 }

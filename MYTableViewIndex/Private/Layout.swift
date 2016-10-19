@@ -19,7 +19,7 @@ struct Layout {
         metrics = Metrics(items: items, style: style)
     }
     
-    mutating func layoutInRect(_ rect: CGRect) {
+    mutating func layout(in rect: CGRect) {
         var yPos: CGFloat = 0
         
         var frames = [CGRect]()

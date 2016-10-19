@@ -138,7 +138,7 @@ open class TableViewIndex : UIControl {
     }
     
     private func queryItems() -> [UIView] {
-        return dataSource != nil ? dataSource!.indexItems(forTableViewIndex: self) : []
+        return dataSource != nil ? dataSource!.indexItems(for: self) : []
     }
     
     private func queryTruncation() -> Truncation<UIView>? {
@@ -148,8 +148,8 @@ open class TableViewIndex : UIControl {
         var truncationItemClass = TruncationItem.self
         
         // Check if the data source provides a custom class for truncation item
-        if dataSource.responds(to: #selector(TableViewIndexDataSource.truncationItemClass(forTableViewIndex:))) {
-            truncationItemClass = dataSource.truncationItemClass!(forTableViewIndex: self) as! TruncationItem.Type
+        if dataSource.responds(to: #selector(TableViewIndexDataSource.truncationItemClass(for:))) {
+            truncationItemClass = dataSource.truncationItemClass!(for: self) as! TruncationItem.Type
         }
         // Now we now the item class and can create truncation items on demand
         return Truncation(items: items, truncationItemFactory: {
@@ -271,9 +271,9 @@ open class TableViewIndex : UIControl {
         currentIndex = idx
         
         if let delegate = self.delegate
-            , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelectItem:atIndex:))) {
+            , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelect:at:))) {
             
-            delegate.tableViewIndex!(self, didSelectItem: items[idx], atIndex: idx)
+            delegate.tableViewIndex!(self, didSelect: items[idx], at: idx)
         }
     }
     
@@ -293,13 +293,13 @@ public protocol TableViewIndexDataSource : NSObjectProtocol {
     /// displaying text, images, search indicator and truncation items are provided.
     /// Can be any view basically, but please avoid passing UITableViews :)
     /// See IndexItem protocol for item customization points.
-    func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView]
+    func indexItems(for tableViewIndex: TableViewIndex) -> [UIView]
     
     /// Provides a class for truncation items. Truncation items are used when there is not enough
     /// space for displaying all the items provided by the data source. If this happens, table index
     /// omits some of the items from being displayed and inserts truncation items instead.
     /// By default table index uses TruncationItem class, tuned to match native index apperance.
-    @objc optional func truncationItemClass(forTableViewIndex tableViewIndex: TableViewIndex) -> AnyClass
+    @objc optional func truncationItemClass(for tableViewIndex: TableViewIndex) -> AnyClass
 }
 
 
@@ -308,7 +308,7 @@ public protocol TableViewIndexDelegate : NSObjectProtocol {
     
     /// Called as a result of recognizing an index touch. Can be used to scroll table view to
     /// the corresponding section.
-    @objc optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int)
+    @objc optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int)
 }
 
 // MARK: - IB support
@@ -318,7 +318,7 @@ extension TableViewIndex {
     
     class TableDataSource : NSObject, TableViewIndexDataSource {
         
-        func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView] {
+        func indexItems(for tableViewIndex: TableViewIndex) -> [UIView] {
             return UILocalizedIndexedCollation.current().sectionIndexTitles.map{ title -> UIView in
                 return StringItem(text: title)
             }

@@ -18,10 +18,10 @@ struct Metrics {
     
     init(items: [IndexItem], style: Style) {
         self.style = style
-        calculate(withItems: items)
+        calculate(with: items)
     }
     
-    private mutating func calculate(withItems items: [IndexItem]) {
+    private mutating func calculate(with items: [IndexItem]) {
         var widths = [CGFloat]()
         var heights = [CGFloat]()
         

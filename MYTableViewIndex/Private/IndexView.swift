@@ -53,7 +53,7 @@ class IndexView : UIView {
         guard var layout = layout else {
             return
         }
-        layout.layoutInRect(bounds)
+        layout.layout(in: bounds)
         
         for (index, item) in items.enumerated() {
             item.frame = layout.itemFrames[index]
@@ -77,7 +77,7 @@ class IndexView : UIView {
         guard var layout = layout else {
             return
         }
-        layout.layoutInRect(bounds)
+        layout.layout(in: bounds)
         
         for (index, item) in items.enumerated() where !oldItems.contains(item) {
             addItem(item, withFrame: layout.itemFrames[index])

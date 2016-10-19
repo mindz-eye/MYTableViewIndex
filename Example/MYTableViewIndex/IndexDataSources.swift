@@ -23,7 +23,7 @@ class CollationIndexDataSource : NSObject, TableViewIndexDataSource {
         self.init(hasSearchIndex: true)
     }
     
-    func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView] {
+    func indexItems(for tableViewIndex: TableViewIndex) -> [UIView] {
         var items = collaction.sectionIndexTitles.map{ title -> UIView in
             return StringItem(text: title)
         }
@@ -61,7 +61,7 @@ extension UIColor {
 
 class ColoredIndexDataSource : CollationIndexDataSource {
     
-    override func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView] {
+    override func indexItems(for tableViewIndex: TableViewIndex) -> [UIView] {
         var color = UIColor.red
         let gradation = collaction.sectionIndexTitles.count + 1
         
@@ -84,7 +84,7 @@ class ImageIndexDataSource : CollationIndexDataSource {
         self.init(hasSearchIndex: false)
     }
     
-    override func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView] {
+    override func indexItems(for tableViewIndex: TableViewIndex) -> [UIView] {
         var items = collaction.sectionIndexTitles.map{ title -> UIView in
             return StringItem(text: title)
         }

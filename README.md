@@ -63,7 +63,7 @@ let tableViewIndexController = TableViewIndexController(tableView: tableView)
 To feed index view with data, one should simply implement the following method of TableViewIndexDataSource protocol:
 
 ````swift
-func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView] {
+func indexItems(for tableViewIndex: TableViewIndex) -> [UIView] {
     return UILocalizedIndexedCollation.currentCollation().sectionIndexTitles.map{ title -> UIView in
         return StringItem(text: title)
     }
@@ -85,7 +85,7 @@ Several predefined types of items are available for displaying strings, images, 
 To respond to index view touches and scroll table to the selected section, one should provide a delegate object and implement the following method:
 
 ````swift
-func tableViewIndex(tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int) {
+func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) {
     let indexPath = NSIndexPath(forRow: 0, inSection: sectionIndex)
     tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Top, animated: false)
 }
