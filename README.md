@@ -102,6 +102,9 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ## Requirements
 
 * iOS 8.0+
+* Swift 3.0
+
+If you'd like to use the library in a project targeting Swift 2.x, use please use [swift-2.x](https://github.com/mindz-eye/MYTableViewIndex/tree/swift-2.x) branch.
 
 ## Installation
 
