@@ -10,12 +10,12 @@ import UIKit
 
 class Cell : UITableViewCell {
     
-    func setupWithItem(item: Item) {
+    func setupWithItem(_ item: Item) {
         textLabel?.text = item as? String
         contentView.backgroundColor = item as? UIColor
     }
     
-    static func heightForItem(item: Item) -> CGFloat {
+    static func heightForItem(_ item: Item) -> CGFloat {
         return item is UIColor ? 100 : 44
     }
 }

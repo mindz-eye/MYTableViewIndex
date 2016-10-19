@@ -47,8 +47,8 @@ struct Metrics {
         itemSizes = sizes
         size = CGSize(width: bbox.width, height: totalHeight)
         
-        widths.sortInPlace()
-        heights.sortInPlace()
+        widths.sort()
+        heights.sort()
         
         let count = items.count
         if (count > 0) {

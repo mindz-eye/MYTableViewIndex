@@ -13,7 +13,7 @@ import UIKit
 public protocol IndexItem {
     
     /// Returns the size that best fits the specified size.
-    func sizeThatFits(size: CGSize) -> CGSize
+    func sizeThatFits(_ size: CGSize) -> CGSize
     
     /// Indicates that the closest neighborhood of this item can not be truncated. The flag is only
     /// checked if the receiver is the first or the last item in index sequence.
@@ -22,7 +22,7 @@ public protocol IndexItem {
     func blocksEdgeTruncation() -> Bool
     
     /// Implement this method to apply style attributes of table index to the item.
-    func applyStyle(style: Style)
+    func applyStyle(_ style: Style)
 }
 
 extension UIView : IndexItem {
@@ -31,6 +31,6 @@ extension UIView : IndexItem {
         return false
     }
     
-    public func applyStyle(style: Style) {}
+    public func applyStyle(_ style: Style) {}
 }
 

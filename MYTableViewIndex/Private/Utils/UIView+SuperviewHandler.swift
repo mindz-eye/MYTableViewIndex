@@ -22,7 +22,7 @@ extension UIView {
             swizzleSelectorOnce(#selector(UIView.didMoveToSuperview), withSelector: #selector(UIView.my_didMoveToSuperview),
                                 forClass: UIView.self)
             
-            if let handler = newValue, superview = superview {
+            if let handler = newValue, let superview = superview {
                 handler(superview)
             }
         }

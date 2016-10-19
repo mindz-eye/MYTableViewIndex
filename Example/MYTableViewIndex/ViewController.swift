@@ -16,22 +16,22 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
-    private var hasSearchIndex = true
-    private var dataSource: DataSource!
-    private var indexDataSource: TableViewIndexDataSource!
+    fileprivate var hasSearchIndex = true
+    fileprivate var dataSource: DataSource!
+    fileprivate var indexDataSource: TableViewIndexDataSource!
     
-    lazy private var searchController = UISearchController(searchResultsController: nil)
+    lazy fileprivate var searchController = UISearchController(searchResultsController: nil)
     
-    private var useMYTableViewIndex = true {
+    fileprivate var useMYTableViewIndex = true {
         didSet {
-            tableViewIndex.hidden = !useMYTableViewIndex
+            tableViewIndex.isHidden = !useMYTableViewIndex
             setNativeIndexHidden(useMYTableViewIndex)
         }
     }
     
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet fileprivate var tableView: UITableView!
     
-    @IBOutlet private var tableViewIndex: TableViewIndex!
+    @IBOutlet fileprivate var tableViewIndex: TableViewIndex!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,49 +49,49 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
         
         setNativeIndexHidden(true)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.handleKeyboardNotification(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handleKeyboardNotification(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.handleKeyboardNotification(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handleKeyboardNotification(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - UITableView
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return dataSource.numberOfSections()
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataSource.numberOfItemsInSection(section)
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return dataSource.titleForHeaderInSection(section)
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.textLabel?.text = dataSource.itemAtIndexPath(indexPath) as? String
         return cell
     }
     
-    func tableView(tableView: UITableView, sectionForSectionIndexTitle title: String, atIndex index: Int) -> Int {
+    func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
         if title == UITableViewIndexSearch {
             tableView.scrollRectToVisible(searchController.searchBar.frame, animated: false)
             return NSNotFound
         } else {
             let sectionIndex = hasSearchIndex ? index - 1 : index
-            return UILocalizedIndexedCollation.currentCollation().sectionForSectionIndexTitleAtIndex(sectionIndex)
+            return UILocalizedIndexedCollation.current().section(forSectionIndexTitle: sectionIndex)
         }
     }
     
-    func sectionIndexTitlesForTableView(tableView: UITableView) -> [String]? {
-        var titles = UILocalizedIndexedCollation.currentCollation().sectionIndexTitles
+    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        var titles = UILocalizedIndexedCollation.current().sectionIndexTitles
         if hasSearchIndex {
-            titles.insert(UITableViewIndexSearch, atIndex: 0)
+            titles.insert(UITableViewIndexSearch, at: 0)
         }
         return titles
     }
@@ -99,52 +99,56 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
     // MARK: - TableViewIndex
     
     func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView] {
-        var items = UILocalizedIndexedCollation.currentCollation().sectionIndexTitles.map{ title -> UIView in
+        var items = UILocalizedIndexedCollation.current().sectionIndexTitles.map{ title -> UIView in
             return StringItem(text: title)
         }
         if hasSearchIndex {
-            items.insert(SearchItem(), atIndex: 0)
+            items.insert(SearchItem(), at: 0)
         }
         return items
     }
     
-    func tableViewIndex(tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int) {
+    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int) {
         if item is SearchItem {
             tableView.scrollRectToVisible(searchController.searchBar.frame, animated: false)
         } else {
             let sectionIndex = hasSearchIndex ? index - 1 : index
             
-            let rowCount = tableView.numberOfRowsInSection(sectionIndex)
-            let indexPath = NSIndexPath(forRow: rowCount > 0 ? 0 : NSNotFound, inSection: sectionIndex)
-            tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Top, animated: false)
+            let rowCount = tableView.numberOfRows(inSection: sectionIndex)
+            let indexPath = IndexPath(row: rowCount > 0 ? 0 : NSNotFound, section: sectionIndex)
+            tableView.scrollToRow(at: indexPath, at: .top, animated: false)
         }
     }
     
     // MARK: - Actions
     
-    @IBAction func useTableViewIndexSwitcherValueChanged(sender: UISwitch) {
-        useMYTableViewIndex = sender.on
+    @IBAction func useTableViewIndexSwitcherValueChanged(_ sender: UISwitch) {
+        useMYTableViewIndex = sender.isOn
     }
     
-    @IBAction func insetSliderValueChanged(sender: UISlider) {
+    @IBAction func insetSliderValueChanged(_ sender: UISlider) {
         self.bottomConstraint.constant = min(view.bounds.height * CGFloat(sender.maximumValue - sender.value),
                                              view.bounds.height * 0.7)
     }
     
     // MARK: - Keyboard
     
-    func handleKeyboardNotification(note: NSNotification) {
+    func handleKeyboardNotification(_ note: Notification) {
         slider.value = 1.0
         
-        if let frame = note.userInfo?[UIKeyboardFrameEndUserInfoKey]?.CGRectValue,
-               curve = UIViewAnimationCurve(rawValue: (note.userInfo?[UIKeyboardAnimationCurveUserInfoKey]?.integerValue)!),
-               duration = note.userInfo?[UIKeyboardAnimationDurationUserInfoKey]?.doubleValue {
+        guard let userInfo = note.userInfo else {
+            return
+        }
+        
+        if let frame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let curve = (userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber)?.intValue,
+            let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue {
             
-            let convertedFrame = view.convertRect(frame, fromView: nil)
+            let convertedFrame = view.convert(frame, from: nil)
             self.bottomConstraint.constant += (tableView.frame.maxY - convertedFrame.minY)
             
-            UIView.animateWithDuration(duration, animations: {
-                UIView.setAnimationCurve(curve)
+            UIView.animate(withDuration: duration, animations: {
+                UIView.setAnimationCurve(UIViewAnimationCurve(rawValue: curve)!)
                 self.view.layoutIfNeeded()
             })
         }
@@ -152,10 +156,10 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
     
     // MARK: - Helpers
     
-    private func setNativeIndexHidden(hidden: Bool) {
-        tableView.sectionIndexColor = hidden ? UIColor.clearColor() : nil
-        tableView.sectionIndexBackgroundColor = hidden ? UIColor.clearColor() : nil
-        tableView.sectionIndexTrackingBackgroundColor = hidden ? UIColor.clearColor() : nil
+    fileprivate func setNativeIndexHidden(_ hidden: Bool) {
+        tableView.sectionIndexColor = hidden ? UIColor.clear : nil
+        tableView.sectionIndexBackgroundColor = hidden ? UIColor.clear : nil
+        tableView.sectionIndexTrackingBackgroundColor = hidden ? UIColor.clear : nil
     }
 }
 

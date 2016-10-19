@@ -26,11 +26,11 @@ protocol Example {
     
     var hasSearchIndex: Bool { get }
     
-    func mapIndexItemToSection(indexItem: IndexItem, index: NSInteger) -> Int
+    func mapIndexItemToSection(_ indexItem: IndexItem, index: NSInteger) -> Int
     
-    func setupTableIndexController(tableIndexController: TableViewIndexController) -> Void
+    func setupTableIndexController(_ tableIndexController: TableViewIndexController) -> Void
     
-    func trackSelectedSections(sections: Set<Int>)
+    func trackSelectedSections(_ sections: Set<Int>)
 }
 
 
@@ -48,15 +48,15 @@ class BasicExample : Example {
         return true
     }
     
-    func mapIndexItemToSection(indexItem: IndexItem, index: NSInteger) -> Int {
+    func mapIndexItemToSection(_ indexItem: IndexItem, index: NSInteger) -> Int {
         return hasSearchIndex ? index - 1 : index
     }
     
-    func setupTableIndexController(tableIndexController: TableViewIndexController) -> Void {
+    func setupTableIndexController(_ tableIndexController: TableViewIndexController) -> Void {
         tableIndexController.tableViewIndex.dataSource = indexDataSource
     }
     
-    func trackSelectedSections(sections: Set<Int>) {}
+    func trackSelectedSections(_ sections: Set<Int>) {}
 }
 
 
@@ -72,33 +72,33 @@ class BackgroundView : UIView {
         
         layer.cornerRadius = 6
         layer.masksToBounds = false
-        backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(Alpha.normal.rawValue)
-        userInteractionEnabled = false
+        backgroundColor = UIColor.lightGray.withAlphaComponent(Alpha.normal.rawValue)
+        isUserInteractionEnabled = false
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func pressed(sender: TableViewIndex) {
-        backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(Alpha.highlighted.rawValue)
+    @objc func pressed(_ sender: TableViewIndex) {
+        backgroundColor = UIColor.lightGray.withAlphaComponent(Alpha.highlighted.rawValue)
     }
     
-    @objc func released(sender: TableViewIndex) {
-        UIView.animateWithDuration(0.15) {
-            self.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(Alpha.normal.rawValue)
+    @objc func released(_ sender: TableViewIndex) {
+        UIView.animate(withDuration: 0.15) {
+            self.backgroundColor = UIColor.lightGray.withAlphaComponent(Alpha.normal.rawValue)
         }
     }
 }
 
 class CustomBackgroundExample : BasicExample {
     
-    private(set) var tableViewIndex: TableViewIndex!
+    fileprivate(set) var tableViewIndex: TableViewIndex!
     
-    override func setupTableIndexController(tableIndexController: TableViewIndexController) {
+    override func setupTableIndexController(_ tableIndexController: TableViewIndexController) {
         super.setupTableIndexController(tableIndexController)
         
-        tableIndexController.tableViewIndex.font = UIFont.boldSystemFontOfSize(12.0)
+        tableIndexController.tableViewIndex.font = UIFont.boldSystemFont(ofSize: 12.0)
         
         let backgroundView = BackgroundView()
         
@@ -112,23 +112,23 @@ class CustomBackgroundExample : BasicExample {
         };
         
         tableIndexController.tableViewIndex.addTarget(backgroundView, action: #selector(BackgroundView.pressed(_:)),
-                                                      forControlEvents: .TouchDown)
+                                                      for: .touchDown)
         
         tableIndexController.tableViewIndex.addTarget(backgroundView, action: #selector(BackgroundView.released(_:)),
-                                                      forControlEvents: [.TouchUpInside, .TouchUpOutside])
+                                                      for: [.touchUpInside, .touchUpOutside])
         
         tableViewIndex = tableIndexController.tableViewIndex
     }
 
-    override func trackSelectedSections(sections: Set<Int>) {
-        let sortedSections = sections.sort()
+    override func trackSelectedSections(_ sections: Set<Int>) {
+        let sortedSections = sections.sorted()
         
-        UIView.animateWithDuration(0.25, animations: {
-            for (index, item) in self.tableViewIndex.items.enumerate() {
+        UIView.animate(withDuration: 0.25, animations: {
+            for (index, item) in self.tableViewIndex.items.enumerated() {
                 let section = self.mapIndexItemToSection(item, index: index)
                 let shouldHighlight = sortedSections.count > 0 && section >= sortedSections.first! && section <= sortedSections.last!
                 
-                item.tintColor = shouldHighlight ? UIColor.redColor() : nil
+                item.tintColor = shouldHighlight ? UIColor.red : nil
             }
         })
     }
@@ -140,10 +140,10 @@ class CustomBackgroundExample : BasicExample {
 
 class LargeFontExample : BasicExample {
     
-    override func setupTableIndexController(tableIndexController: TableViewIndexController) {
+    override func setupTableIndexController(_ tableIndexController: TableViewIndexController) {
         super.setupTableIndexController(tableIndexController)
         
-        tableIndexController.tableViewIndex.font = UIFont.boldSystemFontOfSize(20.0)
+        tableIndexController.tableViewIndex.font = UIFont.boldSystemFont(ofSize: 20.0)
     }
 }
 
@@ -175,12 +175,12 @@ class ImageIndexExample : BasicExample {
         return ImageIndexDataSource()
     }
     
-    override func mapIndexItemToSection(indexItem: IndexItem, index: NSInteger) -> Int {
+    override func mapIndexItemToSection(_ indexItem: IndexItem, index: NSInteger) -> Int {
         return index <= 1 ? NSNotFound : index - 2
     }
 }
 
-func exampleByType(type: ExampleType) -> Example {
+func exampleByType(_ type: ExampleType) -> Example {
     switch type {
     case .customBackground:
         return CustomBackgroundExample()

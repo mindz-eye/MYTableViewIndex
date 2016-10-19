@@ -15,7 +15,7 @@ public class TableViewIndexController : NSObject {
     public let tableViewIndex = TableViewIndex()
     
     /// Set closure to tune layout of the table index.
-    public var layouter: ((tableView: UITableView, tableIndex: TableViewIndex) -> Void)?
+    public var layouter: ((_ tableView: UITableView, _ tableIndex: TableViewIndex) -> Void)?
     
     private(set) weak var tableView: UITableView?
     
@@ -38,7 +38,7 @@ public class TableViewIndexController : NSObject {
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - UITableView observation
@@ -56,7 +56,7 @@ public class TableViewIndexController : NSObject {
         })
         
         tableView.my_didMoveToSuperviewHandler = { [weak self] superview in
-            if let superview = superview, tableIndex = self?.tableViewIndex {
+            if let superview = superview, let tableIndex = self?.tableViewIndex {
                 superview.addSubview(tableIndex)
                 self?.layoutUsingTableInset()
             } else {
@@ -68,28 +68,28 @@ public class TableViewIndexController : NSObject {
     // MARK: - Keyboard
     
     private func observeKeyboard() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    @objc private func handleKeyboardNotification(note: NSNotification) {
-        guard let tableView = tableView, parentView = tableView.superview, userInfo = note.userInfo else {
+    @objc private func handleKeyboardNotification(_ note: Notification) {
+        guard let tableView = tableView, let parentView = tableView.superview, let userInfo = note.userInfo else {
             return;
         }
-        if let frame = userInfo[UIKeyboardFrameEndUserInfoKey]?.CGRectValue,
-               curve = userInfo[UIKeyboardAnimationCurveUserInfoKey]?.integerValue,
-            duration = userInfo[UIKeyboardAnimationDurationUserInfoKey]?.doubleValue {
+        
+        if let frame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+           let curve = (userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber)?.intValue,
+           let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue {
             
-            let convertedFrame = parentView.convertRect(frame, fromView: nil)
+            let convertedFrame = parentView.convert(frame, from: nil)
             
             var inset = tableView.contentInset
             inset.bottom = (tableView.frame.maxY - convertedFrame.minY)
             
-            UIView.animateWithDuration(duration, animations: {
-                if let curveValue = UIViewAnimationCurve(rawValue: curve) {
-                    UIView.setAnimationCurve(curveValue)
-                }
+            UIView.animate(withDuration: duration, animations: {
+                UIView.setAnimationCurve(UIViewAnimationCurve(rawValue: curve)!)
+
                 self.layout(withInset: inset)
                 parentView.layoutIfNeeded()
                 
@@ -113,7 +113,7 @@ public class TableViewIndexController : NSObject {
             return
         }
         let tableFrame = tableViewIndex.superview != nil
-            ? tableView.convertRect(tableView.bounds, toView: tableViewIndex.superview) : tableView.frame
+            ? tableView.convert(tableView.bounds, to: tableViewIndex.superview) : tableView.frame
         
         let width = tableFrame.width - (inset.left + inset.right)
         let height = tableFrame.height - (inset.top + inset.bottom)
@@ -121,7 +121,7 @@ public class TableViewIndexController : NSObject {
         layoutInRect(CGRect(x: tableFrame.x, y: tableFrame.y + inset.top, width: width, height: height))
     }
     
-    private func layoutInRect(rect: CGRect) {
+    private func layoutInRect(_ rect: CGRect) {
         let tableIndexSize = tableViewIndex.sizeThatFits(rect.size)
         
         var frame = CGRect(origin: CGPoint(x: rect.right - tableIndexSize.width, y: rect.y), size: tableIndexSize)
@@ -131,8 +131,8 @@ public class TableViewIndexController : NSObject {
         }
         tableViewIndex.frame = frame
         
-        if let layouter = layouter, tableView = tableView {
-            layouter(tableView: tableView, tableIndex: tableViewIndex)
+        if let layouter = layouter, let tableView = tableView {
+            layouter(tableView, tableViewIndex)
         }
     }
     
@@ -141,7 +141,7 @@ public class TableViewIndexController : NSObject {
     /// Hides or shows the table index. Completion closure is called instantly if animated flag is false.
     /// Use alongsideAnimations closure to run additional animations in the same context as the hide/show
     /// animation.
-    public func setHidden(hidden: Bool, animated: Bool, completion: (Void -> ())?, alongsideAnimations: (Void -> ())?) {
+    public func setHidden(_ hidden: Bool, animated: Bool, completion: ((Void) -> ())?, alongsideAnimations: ((Void) -> ())?) {
         if self.hidden == hidden {
             return
         }
@@ -151,7 +151,7 @@ public class TableViewIndexController : NSObject {
             observer = nil
         }
         let completionHandler = {
-            self.tableViewIndex.hidden = hidden
+            self.tableViewIndex.isHidden = hidden
             
             if !hidden {
                 self.observeTableView()
@@ -167,15 +167,15 @@ public class TableViewIndexController : NSObject {
         }
     }
     
-    public func setHidden(hidden: Bool, animated: Bool) {
+    public func setHidden(_ hidden: Bool, animated: Bool) {
         setHidden(hidden, animated: animated, completion: nil, alongsideAnimations: nil)
     }
     
-    private func animateToHidden(hidden: Bool, completion: Void -> (), alongsideAnimations: (Void -> ())?) {
+    private func animateToHidden(_ hidden: Bool, completion: @escaping (Void) -> (), alongsideAnimations: ((Void) -> ())?) {
         if !hidden {
-            tableViewIndex.hidden = false
+            tableViewIndex.isHidden = false
         }        
-        UIView.animateWithDuration(0.25, animations: {
+        UIView.animate(withDuration: 0.25, animations: {
             self.layoutUsingTableInset()
             
             if let animations = alongsideAnimations {

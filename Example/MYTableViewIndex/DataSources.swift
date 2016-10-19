@@ -14,36 +14,36 @@ protocol DataSource {
     
     func numberOfSections() -> Int
     
-    func numberOfItemsInSection(section: Int) -> Int
+    func numberOfItemsInSection(_ section: Int) -> Int
     
-    func itemAtIndexPath(indexPath: NSIndexPath) -> Item?
+    func itemAtIndexPath(_ indexPath: IndexPath) -> Item?
     
-    func titleForHeaderInSection(section: Int) -> String?
+    func titleForHeaderInSection(_ section: Int) -> String?
 }
 
 extension String : Item {}
 
 struct CountryDataSource : DataSource {
-    private(set) var sections = [[String]]()
+    fileprivate(set) var sections = [[String]]()
     
-    private let collaction = UILocalizedIndexedCollation.currentCollation()
+    fileprivate let collaction = UILocalizedIndexedCollation.current()
     
     init() {
         sections = split(loadCountryNames())
     }
     
-    private func loadCountryNames() -> [String] {
-        return NSLocale.ISOCountryCodes().map { (code) -> String in
-            return NSLocale.currentLocale().displayNameForKey(NSLocaleCountryCode, value: code)!
+    fileprivate func loadCountryNames() -> [String] {
+        return Locale.isoRegionCodes.map { (code) -> String in
+            return Locale.current.localizedString(forRegionCode: code)!
         }
     }
     
-    private func split(items: [String]) -> [[String]] {
-        let collation = UILocalizedIndexedCollation.currentCollation()
-        let items = collation.sortedArrayFromArray(items, collationStringSelector: #selector(NSObject.description)) as! [String]
-        var sections = [[String]](count: collation.sectionTitles.count, repeatedValue: [])
+    fileprivate func split(_ items: [String]) -> [[String]] {
+        let collation = UILocalizedIndexedCollation.current()
+        let items = collation.sortedArray(from: items, collationStringSelector: #selector(NSObject.description)) as! [String]
+        var sections = [[String]](repeating: [], count: collation.sectionTitles.count)
         for item in items {
-            let index = collation.sectionForObject(item, collationStringSelector: #selector(NSObject.description))
+            let index = collation.section(for: item, collationStringSelector: #selector(NSObject.description))
             sections[index].append(item)
         }
         return sections
@@ -53,15 +53,15 @@ struct CountryDataSource : DataSource {
         return sections.count
     }
     
-    func numberOfItemsInSection(section: Int) -> Int {
+    func numberOfItemsInSection(_ section: Int) -> Int {
         return sections[section].count
     }
     
-    func itemAtIndexPath(indexPath: NSIndexPath) -> Item? {
-        return sections[indexPath.section][indexPath.item]
+    func itemAtIndexPath(_ indexPath: IndexPath) -> Item? {
+        return sections[(indexPath as NSIndexPath).section][(indexPath as NSIndexPath).item]
     }
     
-    func titleForHeaderInSection(section: Int) -> String? {
+    func titleForHeaderInSection(_ section: Int) -> String? {
         return collaction.sectionTitles[section]
     }
 }
@@ -70,27 +70,27 @@ extension UIColor : Item {}
 
 struct CompoundDataSource : DataSource {
     
-    private let colorsSection = [UIColor.lightGrayColor(), UIColor.grayColor(), UIColor.darkGrayColor()]
+    fileprivate let colorsSection = [UIColor.lightGray, UIColor.gray, UIColor.darkGray]
     
-    private let countryDataSource = CountryDataSource()
+    fileprivate let countryDataSource = CountryDataSource()
     
     func numberOfSections() -> Int {
         return countryDataSource.numberOfSections() + 1
     }
     
-    func numberOfItemsInSection(section: Int) -> Int {
+    func numberOfItemsInSection(_ section: Int) -> Int {
         return section == 0 ? colorsSection.count : countryDataSource.numberOfItemsInSection(section - 1)
     }
     
-    func itemAtIndexPath(indexPath: NSIndexPath) -> Item? {
-        if indexPath.section == 0 {
-            return colorsSection[indexPath.item]
+    func itemAtIndexPath(_ indexPath: IndexPath) -> Item? {
+        if (indexPath as NSIndexPath).section == 0 {
+            return colorsSection[(indexPath as NSIndexPath).item]
         } else {
-            return countryDataSource.itemAtIndexPath(NSIndexPath(forItem: indexPath.item, inSection: indexPath.section - 1))
+            return countryDataSource.itemAtIndexPath(IndexPath(item: (indexPath as NSIndexPath).item, section: (indexPath as NSIndexPath).section - 1))
         }
     }
     
-    func titleForHeaderInSection(section: Int) -> String? {
+    func titleForHeaderInSection(_ section: Int) -> String? {
         return section == 0 ? nil : countryDataSource.titleForHeaderInSection(section - 1)
     }
 }

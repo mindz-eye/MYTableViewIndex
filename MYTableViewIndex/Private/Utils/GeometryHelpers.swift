@@ -54,7 +54,7 @@ extension CGRect {
         set { y = newValue - height }
     }
     
-    func insetBy(inset: UIEdgeInsets) -> CGRect {
+    func insetBy(_ inset: UIEdgeInsets) -> CGRect {
         var rect = self
         rect.left += inset.left
         rect.top += inset.top
@@ -64,14 +64,14 @@ extension CGRect {
 }
 
 func pixelScale() -> CGFloat {
-    return 1.0 / UIScreen.mainScreen().scale
+    return 1.0 / UIScreen.main.scale
 }
 
-func roundToPixelBorder(value: CGFloat) -> CGFloat {
-    let scale = UIScreen.mainScreen().scale
+func roundToPixelBorder(_ value: CGFloat) -> CGFloat {
+    let scale = UIScreen.main.scale
     return round(value * scale) / scale
 }
 
-func roundToPixelBorder(point: CGPoint) -> CGPoint {
+func roundToPixelBorder(_ point: CGPoint) -> CGPoint {
     return CGPoint(x: roundToPixelBorder(point.x), y: roundToPixelBorder(point.y))
 }

@@ -10,22 +10,22 @@ import UIKit
 
 /// Use this class to get a magnifying glass icon similar to UITableViewIndexSearch.
 @objc (MYSearchItem)
-public class SearchItem : UIView {
+open class SearchItem : UIView {
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func sizeThatFits(size: CGSize) -> CGSize {
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize(width: size.width * 0.75, height: ceil(size.height * 1.15))
     }
     
-    public override func drawRect(rect: CGRect) {
+    open override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
         
         let xMargin = max(rect.width - rect.height, 0) / 2
@@ -40,24 +40,24 @@ public class SearchItem : UIView {
         let circleFrame = CGRect(origin: CGPoint(x: targetRect.x + lineWidth / 2, y: targetRect.y + lineWidth / 2),
                                  size: CGSize(width: radius * 2, height: radius * 2))
         
-        CGContextSetLineWidth(context, lineWidth)
-        CGContextSetStrokeColorWithColor(context, tintColor.CGColor)
+        context?.setLineWidth(lineWidth)
+        context?.setStrokeColor(tintColor.cgColor)
         
-        CGContextAddEllipseInRect(context, circleFrame)
+        context?.addEllipse(in: circleFrame)
         
-        CGContextStrokePath(context)
+        context?.strokePath()
         
         let handlePt1 = CGPoint(x: circleFrame.centerX + CGFloat(cos(315 * M_PI / 180)) * radius,
                                 y: circleFrame.centerY + CGFloat(cos(315 * M_PI / 180)) * radius)
         let handlePt2 = CGPoint(x: targetRect.right - lineWidth / 3.0, y: targetRect.bottom - lineWidth / 3.0)
         
-        CGContextMoveToPoint(context, handlePt1.x, handlePt1.y)
-        CGContextAddLineToPoint(context, handlePt2.x, handlePt2.y)
+        context?.move(to: handlePt1)
+        context?.addLine(to: handlePt2)
         
-        CGContextStrokePath(context)
+        context?.strokePath()
     }
     
-    public override func blocksEdgeTruncation() -> Bool {
+    open override func blocksEdgeTruncation() -> Bool {
         return true
     }
 }

@@ -19,12 +19,12 @@ struct Layout {
         metrics = Metrics(items: items, style: style)
     }
     
-    mutating func layoutInRect(rect: CGRect) {
+    mutating func layoutInRect(_ rect: CGRect) {
         var yPos: CGFloat = 0
         
         var frames = [CGRect]()
         
-        for (index, _) in items.enumerate() {
+        for (index, _) in items.enumerated() {
             var itemRect = CGRect(origin: CGPoint(x: 0, y: yPos), size: metrics.itemSizes[index])
             itemRect.centerX = rect.centerX
             itemRect.origin = roundToPixelBorder(itemRect.origin)

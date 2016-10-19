@@ -13,7 +13,7 @@ struct Truncation<T: IndexItem> {
     private let items: [T]
     private let truncationItemFactory: () -> T
     
-    init(items: [T], truncationItemFactory: () -> T) {
+    init(items: [T], truncationItemFactory: @escaping () -> T) {
         self.items = items
         self.truncationItemFactory = truncationItemFactory
     }
@@ -34,7 +34,7 @@ struct Truncation<T: IndexItem> {
         if itemsToTruncate.count > 5 {
             if itemsToTruncate[0].blocksEdgeTruncation() {
                 availableHeight -= metrics.itemSizes[0].height
-                itemsToTruncate.removeAtIndex(0)
+                itemsToTruncate.remove(at: 0)
                 shouldPrependFirstItem = true
             }
             if itemsToTruncate.last!.blocksEdgeTruncation() {
@@ -51,7 +51,7 @@ struct Truncation<T: IndexItem> {
         var result = doTruncateItems(itemsToTruncate, linesAvailable: linesAvailable)
 
         if shouldPrependFirstItem {
-            result.insert(items[0], atIndex: 0)
+            result.insert(items[0], at: 0)
         }
         if shouldAppendLastItem {
             result.append(items.last!)
@@ -59,12 +59,12 @@ struct Truncation<T: IndexItem> {
         return result
     }
     
-    private func calculateAvailableLines(items items: [T], metrics: Metrics, height: CGFloat) -> Int {
+    private func calculateAvailableLines(items: [T], metrics: Metrics, height: CGFloat) -> Int {
         let lineHeight = metrics.medianSize.height
         let truncationHeight = truncationItemFactory().sizeThatFits(metrics.style.font.my_boundingSize()).height
         
         var linesAvailable = items.count
-        var currHeight = CGFloat.max
+        var currHeight = CGFloat.greatestFiniteMagnitude
         
         while currHeight > height {
             let truncationItemsCount = CGFloat(linesAvailable / 2)
@@ -82,7 +82,7 @@ struct Truncation<T: IndexItem> {
         return linesAvailable
     }
     
-    private func doTruncateItems(items: [T], linesAvailable: Int) -> [T] {
+    private func doTruncateItems(_ items: [T], linesAvailable: Int) -> [T] {
         var result = [T]()
         
         let step = Double(items.count) / Double(linesAvailable)

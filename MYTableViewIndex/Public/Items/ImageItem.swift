@@ -10,20 +10,20 @@ import UIKit
 
 /// Use this class for displaying image based items.
 @objc (MYImageItem)
-public class ImageItem : UIImageView {
+open class ImageItem : UIImageView {
     
     public var contentInset = UIEdgeInsets()
     
     override public init(image: UIImage?) {
         super.init(image: image)
-        contentMode = .ScaleAspectFit
+        contentMode = .scaleAspectFit
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func sizeThatFits(size: CGSize) -> CGSize {
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
         guard let image = image else {
             return CGSize()
         }

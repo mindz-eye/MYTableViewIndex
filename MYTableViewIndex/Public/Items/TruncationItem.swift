@@ -10,35 +10,35 @@ import UIKit
 
 /// The item matches Apple's `•` symbols used as truncation indicators. Used it by default in table index.
 @objc (MYTruncationItem)
-public class TruncationItem : UIView {
+open class TruncationItem : UIView {
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func sizeThatFits(size: CGSize) -> CGSize {
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
         let circleBounds = circleBoundsForSize(size)
         return CGSize(width: circleBounds.width, height: circleBounds.height * 1.8)
     }
     
-    private func circleBoundsForSize(size: CGSize) -> CGRect {
+    private func circleBoundsForSize(_ size: CGSize) -> CGRect {
         let radius = round(size.height * 0.25)
-        return CGRect(origin: CGPointZero, size: CGSize(width: radius * 2, height: radius * 2))
+        return CGRect(origin: CGPoint.zero, size: CGSize(width: radius * 2, height: radius * 2))
     }
     
-    public override func drawRect(rect: CGRect) {
+    open override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
         
         var circleFrame = circleBoundsForSize(rect.size)
         circleFrame.center = rect.center
         
-        CGContextAddEllipseInRect(context, circleFrame)
-        CGContextSetFillColorWithColor(context, tintColor.CGColor)
-        CGContextFillPath(context)
+        context?.addEllipse(in: circleFrame)
+        context?.setFillColor(tintColor.cgColor)
+        context?.fillPath()
     }
 }

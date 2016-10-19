@@ -15,9 +15,9 @@ protocol ExampleContainer {
 
 class ExamplesViewController : UITableViewController {
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let exampleType = ExampleType(rawValue: segue.identifier!) {
-            var vc = segue.destinationViewController as! ExampleContainer
+            var vc = segue.destination as! ExampleContainer
             vc.example = exampleByType(exampleType)
         }
     }

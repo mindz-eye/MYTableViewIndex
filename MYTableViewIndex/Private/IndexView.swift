@@ -22,6 +22,14 @@ class IndexView : UIView {
         }
     }
     
+    override open var intrinsicContentSize: CGSize {
+        if let layout = layout {
+            return layout.metrics.size
+        } else {
+            return CGSize()
+        }
+    }
+    
     private var layout: Layout?
     
     override init(frame: CGRect) {
@@ -35,8 +43,8 @@ class IndexView : UIView {
     }
     
     private func commonInit() {
-        userInteractionEnabled = false
-        backgroundColor = UIColor.clearColor()
+        isUserInteractionEnabled = false
+        backgroundColor = UIColor.clear
     }
     
     override func layoutSubviews() {
@@ -47,7 +55,7 @@ class IndexView : UIView {
         }
         layout.layoutInRect(bounds)
         
-        for (index, item) in items.enumerate() {
+        for (index, item) in items.enumerated() {
             item.frame = layout.itemFrames[index]
         }
     }
@@ -59,7 +67,7 @@ class IndexView : UIView {
         }
     }
     
-    private func updateWithItems(items: [UIView], oldItems: [UIView]) {
+    private func updateWithItems(_ items: [UIView], oldItems: [UIView]) {
         for item in oldItems where !items.contains(item) {
             removeItem(item)
         }
@@ -71,12 +79,12 @@ class IndexView : UIView {
         }
         layout.layoutInRect(bounds)
         
-        for (index, item) in items.enumerate() where !oldItems.contains(item) {
+        for (index, item) in items.enumerated() where !oldItems.contains(item) {
             addItem(item, withFrame: layout.itemFrames[index])
         }
     }
     
-    private func removeItem(item: UIView) {
+    private func removeItem(_ item: UIView) {
         // A little trickery to make item removal look nice when performed inside animation block
         CATransaction.setCompletionBlock {
             item.alpha = 1
@@ -88,7 +96,7 @@ class IndexView : UIView {
         item.alpha = 0
     }
     
-    private func addItem(item: UIView, withFrame frame: CGRect) {
+    private func addItem(_ item: UIView, withFrame frame: CGRect) {
         addSubview(item)
         
         // Make item appear with nice fade in animation when layout is called inside animation block
@@ -99,15 +107,7 @@ class IndexView : UIView {
         item.alpha = 1
     }
     
-    override func intrinsicContentSize() -> CGSize {
-        if let layout = layout {
-            return layout.metrics.size
-        } else {
-            return CGSize()
-        }
-    }
-    
-    override func sizeThatFits(size: CGSize) -> CGSize {
-        return CGSize(width: intrinsicContentSize().width, height: intrinsicContentSize().height)
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: intrinsicContentSize.width, height: intrinsicContentSize.height)
     }
 }

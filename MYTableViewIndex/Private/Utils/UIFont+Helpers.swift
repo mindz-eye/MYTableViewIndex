@@ -8,8 +8,8 @@
 
 import UIKit
 
-public func ==(lhs: [String : AnyObject], rhs: [String : AnyObject]) -> Bool {
-    return NSDictionary(dictionary: lhs).isEqualToDictionary(rhs)
+public func ==(lhs: [String : Any], rhs: [String : Any]) -> Bool {
+    return NSDictionary(dictionary: lhs).isEqual(to: rhs)
 }
 
 extension UIFont {
@@ -18,7 +18,7 @@ extension UIFont {
         return CGSize(width: lineHeight, height: lineHeight)
     }
     
-    func my_isEqual(font: UIFont) -> Bool {
-        return font.fontDescriptor().fontAttributes() == self.fontDescriptor().fontAttributes()
+    func my_isEqual(_ font: UIFont) -> Bool {
+        return font.fontDescriptor.fontAttributes == self.fontDescriptor.fontAttributes
     }
 }

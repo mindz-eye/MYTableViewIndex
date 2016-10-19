@@ -18,7 +18,7 @@ public protocol Style {
 
 struct StyleDefaults {
     
-    static let font = UIFont.boldSystemFontOfSize(11.0)
+    static let font = UIFont.boldSystemFont(ofSize: 11.0)
  
     // Seems like Apple uses this constant and not the actual pixel size value
     static let itemSpacing: CGFloat = 0.5

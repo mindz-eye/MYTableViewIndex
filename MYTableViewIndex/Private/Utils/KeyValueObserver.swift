@@ -14,10 +14,10 @@ final class KeyValueObserver : NSObject {
     
     private weak var observedObject: NSObject?
     private let observedKeyPaths: [String]
-    private let observeHandler: (keyPath: String) -> ()
+    private let observeHandler: (_ keyPath: String) -> ()
     private var observing: Bool = false
     
-    init(object: NSObject, keyPaths: [String], handler: (keyPath: String) -> ()) {
+    init(object: NSObject, keyPaths: [String], handler: @escaping (_ keyPath: String) -> ()) {
         observedObject = object
         observedKeyPaths = keyPaths
         observeHandler = handler
@@ -39,7 +39,7 @@ final class KeyValueObserver : NSObject {
             return
         }
         for keyPath in observedKeyPaths {
-            observedObject?.addObserver(self, forKeyPath: keyPath, options: [.Initial, .New], context: &KVOContext)
+            observedObject?.addObserver(self, forKeyPath: keyPath, options: [.initial, .new], context: &KVOContext)
         }
         observing = true
     }
@@ -50,7 +50,7 @@ final class KeyValueObserver : NSObject {
         }
     }
     
-    private func unobserveObject(object: NSObject) {
+    private func unobserveObject(_ object: NSObject) {
         if !observing {
             return
         }
@@ -60,13 +60,13 @@ final class KeyValueObserver : NSObject {
         observing = false
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?,
-                                         change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                               change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
-        if let keyPath = keyPath where context == &KVOContext {
-            observeHandler(keyPath: keyPath)
+        if let keyPath = keyPath , context == &KVOContext {
+            observeHandler(keyPath)
         } else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change as! [NSKeyValueChangeKey : Any]?, context: context)
         }
     }
 }

@@ -9,7 +9,7 @@
 import UIKit
 
 @objc(MYTableViewIndex)
-public class TableViewIndex : UIControl {
+open class TableViewIndex : UIControl {
     
     /// Data source for the table index object. See TableViewIndexDataSource protocol for details.
     @IBOutlet public weak var dataSource: TableViewIndexDataSource? {
@@ -26,7 +26,7 @@ public class TableViewIndex : UIControl {
     public var backgroundView: UIView? {
         didSet {
             if let view = backgroundView {
-                insertSubview(view, atIndex: 0)
+                insertSubview(view, at: 0)
             } else {
                 addDefaultBackgroundView()
             }
@@ -52,7 +52,7 @@ public class TableViewIndex : UIControl {
     /// doesn't change the position of index items. Instead, it changes size of the background view
     /// to match the inset. In other words, the background view "wraps" the index content.
     /// Set inset value to CGFloat.max to make background view fill all the available space on that side.
-    public var indexInset = UIEdgeInsets(top: CGFloat.max, left: pixelScale(), bottom: CGFloat.max, right: pixelScale()) {
+    public var indexInset = UIEdgeInsets(top: CGFloat.greatestFiniteMagnitude, left: pixelScale(), bottom: CGFloat.greatestFiniteMagnitude, right: pixelScale()) {
         didSet {
             setNeedsLayout()
         }
@@ -64,6 +64,12 @@ public class TableViewIndex : UIControl {
         didSet {
             setNeedsLayout()
         }
+    }
+    
+    override open var intrinsicContentSize: CGSize {
+        let width = indexRect().width + indexInset.left + indexInset.right
+        let minWidth: CGFloat = 44.0
+        return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
     }
 
     /// The array of all items provided by data source.
@@ -101,20 +107,20 @@ public class TableViewIndex : UIControl {
     }
     
     private func commonInit() {
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
         
         addDefaultBackgroundView()
         updateStyle()
         
-        exclusiveTouch = true
-        multipleTouchEnabled = false
+        isExclusiveTouch = true
+        isMultipleTouchEnabled = false
     }
     
     private func addDefaultBackgroundView() {
         let view = UIView()
-        view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.9)
-        view.userInteractionEnabled = false
-        insertSubview(view, atIndex: 0)
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        view.isUserInteractionEnabled = false
+        insertSubview(view, at: 0)
         backgroundView = view
     }
     
@@ -142,7 +148,7 @@ public class TableViewIndex : UIControl {
         var truncationItemClass = TruncationItem.self
         
         // Check if the data source provides a custom class for truncation item
-        if dataSource.respondsToSelector(#selector(TableViewIndexDataSource.truncationItemClass(forTableViewIndex:))) {
+        if dataSource.responds(to: #selector(TableViewIndexDataSource.truncationItemClass(forTableViewIndex:))) {
             truncationItemClass = dataSource.truncationItemClass!(forTableViewIndex: self) as! TruncationItem.Type
         }
         // Now we now the item class and can create truncation items on demand
@@ -178,7 +184,7 @@ public class TableViewIndex : UIControl {
     // MARK: - Layout
     
     /// Returns a drawing area for the index items.
-    public func indexRect() -> CGRect {
+    open func indexRect() -> CGRect {
         var frame = CGRect(origin: CGPoint(), size: indexView.sizeThatFits(bounds.size)).integral
         frame.right = bounds.right - indexInset.right + indexOffset.horizontal
         frame.centerY = bounds.centerY + indexOffset.vertical
@@ -186,7 +192,7 @@ public class TableViewIndex : UIControl {
     }
     
     /// Returns a drawing area for the background view.
-    public func backgroundRect() -> CGRect {
+    open func backgroundRect() -> CGRect {
         let indexFrame = indexRect()
         
         let width = indexFrame.width + indexInset.left + indexInset.right
@@ -197,16 +203,16 @@ public class TableViewIndex : UIControl {
         rect.centerY = indexFrame.centerY
         
         // Check if background view should fill all the available space
-        if indexInset.top == CGFloat.max {
+        if indexInset.top == CGFloat.greatestFiniteMagnitude {
             rect.top = 0.0
         }
-        if indexInset.bottom == CGFloat.max {
+        if indexInset.bottom == CGFloat.greatestFiniteMagnitude {
             rect.bottom = bounds.bottom
         }
         return rect.integral
     }
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         updateVisibleItems()
@@ -215,14 +221,8 @@ public class TableViewIndex : UIControl {
         backgroundView?.frame = backgroundRect()
     }
     
-    public override func intrinsicContentSize() -> CGSize {
-        let width = indexRect().width + indexInset.left + indexInset.right
-        let minWidth: CGFloat = 44.0
-        return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
-    }
-    
-    public override func sizeThatFits(size: CGSize) -> CGSize {
-        return CGSize(width: intrinsicContentSize().width, height: size.height)
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return CGSize(width: intrinsicContentSize.width, height: size.height)
     }
     
     // MARK: - Touches
@@ -230,38 +230,38 @@ public class TableViewIndex : UIControl {
     private var currentTouch: UITouch?
     private var currentIndex: Int?
     
-    override public func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if let touch = touches.first where bounds.contains(touch.locationInView(self)) {
+    override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first , bounds.contains(touch.location(in: self)) {
             currentTouch = touch
-            highlighted = true
+            isHighlighted = true
             processTouch(touch)
         }
-        super.touchesBegan(touches, withEvent: event)
+        super.touchesBegan(touches, with: event)
     }
     
-    override public func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if let touch = currentTouch where touches.contains(touch) {
+    override open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = currentTouch , touches.contains(touch) {
             processTouch(touch)
         }
-        super.touchesMoved(touches, withEvent: event)
+        super.touchesMoved(touches, with: event)
     }
     
-    override public func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if let touch = currentTouch where touches.contains(touch) {
+    override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = currentTouch , touches.contains(touch) {
             finalizeTouch()
         }
-        super.touchesEnded(touches, withEvent: event)
+        super.touchesEnded(touches, with: event)
     }
     
-    override public func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-        if let touch = currentTouch, touches = touches where touches.contains(touch) {
+    override open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = currentTouch, touches.contains(touch) {
             finalizeTouch()
         }
-        super.touchesCancelled(touches, withEvent: event)
+        super.touchesCancelled(touches, with: event)
     }
     
-    private func processTouch(touch: UITouch) {
-        let location = touch.locationInView(indexView)
+    private func processTouch(_ touch: UITouch) {
+        let location = touch.location(in: indexView)
         let progress = max(0, min(location.y / indexView.bounds.height, 0.9999))
         let idx = Int(floor(progress * CGFloat(items.count)))
         
@@ -271,7 +271,7 @@ public class TableViewIndex : UIControl {
         currentIndex = idx
         
         if let delegate = self.delegate
-            where delegate.respondsToSelector(#selector(TableViewIndexDelegate.tableViewIndex(_:didSelectItem:atIndex:))) {
+            , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelectItem:atIndex:))) {
             
             delegate.tableViewIndex!(self, didSelectItem: items[idx], atIndex: idx)
         }
@@ -280,7 +280,7 @@ public class TableViewIndex : UIControl {
     private func finalizeTouch() {
         currentTouch = nil
         currentIndex = nil
-        highlighted = false
+        isHighlighted = false
     }
 }
 
@@ -299,7 +299,7 @@ public protocol TableViewIndexDataSource : NSObjectProtocol {
     /// space for displaying all the items provided by the data source. If this happens, table index
     /// omits some of the items from being displayed and inserts truncation items instead.
     /// By default table index uses TruncationItem class, tuned to match native index apperance.
-    optional func truncationItemClass(forTableViewIndex tableViewIndex: TableViewIndex) -> AnyClass
+    @objc optional func truncationItemClass(forTableViewIndex tableViewIndex: TableViewIndex) -> AnyClass
 }
 
 
@@ -308,7 +308,7 @@ public protocol TableViewIndexDelegate : NSObjectProtocol {
     
     /// Called as a result of recognizing an index touch. Can be used to scroll table view to
     /// the corresponding section.
-    optional func tableViewIndex(tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int)
+    @objc optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelectItem item: UIView, atIndex index: Int)
 }
 
 // MARK: - IB support
@@ -319,13 +319,13 @@ extension TableViewIndex {
     class TableDataSource : NSObject, TableViewIndexDataSource {
         
         func indexItems(forTableViewIndex tableViewIndex: TableViewIndex) -> [UIView] {
-            return UILocalizedIndexedCollation.currentCollation().sectionIndexTitles.map{ title -> UIView in
+            return UILocalizedIndexedCollation.current().sectionIndexTitles.map{ title -> UIView in
                 return StringItem(text: title)
             }
         }        
     }
     
-    public override func prepareForInterfaceBuilder() {
+    open override func prepareForInterfaceBuilder() {
         dataSource = TableDataSource()
     }
 }

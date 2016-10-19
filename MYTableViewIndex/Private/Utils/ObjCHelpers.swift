@@ -15,7 +15,7 @@ private final class Box<T> {
     init (_ value: T) { self.value = value }
 }
 
-func setAssociatedObject<T>(object: AnyObject, key: UnsafePointer<Void>, value: T?, policy: objc_AssociationPolicy) {
+func setAssociatedObject<T>(_ object: AnyObject, key: UnsafeRawPointer, value: T?, policy: objc_AssociationPolicy) {
     if let value = value {
         if let v = value as? AnyObject {
             objc_setAssociatedObject(object, key, v,  policy)
@@ -27,11 +27,11 @@ func setAssociatedObject<T>(object: AnyObject, key: UnsafePointer<Void>, value: 
     }
 }
 
-func removeAssociatedObject(object: AnyObject, key: UnsafePointer<Void>) {
+func removeAssociatedObject(_ object: AnyObject, key: UnsafeRawPointer) {
     objc_setAssociatedObject(object, key, nil,  .OBJC_ASSOCIATION_ASSIGN)
 }
 
-func getAssociatedObject<T>(object: AnyObject, key: UnsafePointer<Void>) -> T? {
+func getAssociatedObject<T>(_ object: AnyObject, key: UnsafeRawPointer) -> T? {
     if let v = objc_getAssociatedObject(object, key) as? T {
         return v
     } else if let v = objc_getAssociatedObject(object, key) as? Box<T> {
@@ -43,18 +43,18 @@ func getAssociatedObject<T>(object: AnyObject, key: UnsafePointer<Void>) -> T? {
 
 // MARK: - Swizzling
 
-func swizzleSelector(selector: Selector, withSelector: Selector, forClass: AnyClass) {
+func swizzleSelector(_ selector: Selector, withSelector: Selector, forClass: AnyClass) {
     let originalMethod = class_getInstanceMethod(forClass, selector)
     let swizzledMethod = class_getInstanceMethod(forClass, withSelector)
     method_exchangeImplementations(originalMethod, swizzledMethod)
 }
 
-func swizzleSelectorOnce(selector: Selector, withSelector: Selector, forClass: AnyClass) {
-    struct Static {
-        static var token: dispatch_once_t = 0
-    }
-    dispatch_once(&Static.token) {
+var swizzled = false
+
+func swizzleSelectorOnce(_ selector: Selector, withSelector: Selector, forClass: AnyClass) {
+    if (!swizzled) {
         swizzleSelector(selector, withSelector: withSelector, forClass: forClass)
+        swizzled = true
     }
 }
 
@@ -69,7 +69,7 @@ extension NSObject {
         var active: Bool = true        
         private let handler: () -> Void
         
-        init(handler: () -> Void) {
+        init(handler: @escaping () -> Void) {
             self.handler = handler
         }
         
