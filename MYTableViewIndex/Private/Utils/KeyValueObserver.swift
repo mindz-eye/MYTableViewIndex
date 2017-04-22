@@ -66,7 +66,7 @@ final class KeyValueObserver : NSObject {
         if let keyPath = keyPath , context == &KVOContext {
             observeHandler(keyPath)
         } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change as! [NSKeyValueChangeKey : Any]?, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
 }

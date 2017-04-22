@@ -47,8 +47,8 @@ open class SearchItem : UIView {
         
         context?.strokePath()
         
-        let handlePt1 = CGPoint(x: circleFrame.centerX + CGFloat(cos(315 * M_PI / 180)) * radius,
-                                y: circleFrame.centerY + CGFloat(cos(315 * M_PI / 180)) * radius)
+        let handlePt1 = CGPoint(x: circleFrame.centerX + cos(315 * CGFloat.pi / 180) * radius,
+                                y: circleFrame.centerY + cos(315 * CGFloat.pi / 180) * radius)
         let handlePt2 = CGPoint(x: targetRect.right - lineWidth / 3.0, y: targetRect.bottom - lineWidth / 3.0)
         
         context?.move(to: handlePt1)

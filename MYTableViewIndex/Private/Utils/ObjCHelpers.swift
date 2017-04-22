@@ -10,18 +10,9 @@ import Foundation
 
 // MARK: - Associated objects
 
-private final class Box<T> {
-    let value : T
-    init (_ value: T) { self.value = value }
-}
-
 func setAssociatedObject<T>(_ object: AnyObject, key: UnsafeRawPointer, value: T?, policy: objc_AssociationPolicy) {
     if let value = value {
-        if let v = value as? AnyObject {
-            objc_setAssociatedObject(object, key, v,  policy)
-        } else {
-            objc_setAssociatedObject(object, key, Box(value), .OBJC_ASSOCIATION_RETAIN)
-        }
+        objc_setAssociatedObject(object, key, value,  policy)
     } else {
         removeAssociatedObject(object, key: key)
     }
@@ -34,8 +25,6 @@ func removeAssociatedObject(_ object: AnyObject, key: UnsafeRawPointer) {
 func getAssociatedObject<T>(_ object: AnyObject, key: UnsafeRawPointer) -> T? {
     if let v = objc_getAssociatedObject(object, key) as? T {
         return v
-    } else if let v = objc_getAssociatedObject(object, key) as? Box<T> {
-        return v.value
     } else {
         return nil
     }
