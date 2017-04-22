@@ -261,6 +261,9 @@ open class TableViewIndex : UIControl {
     }
     
     private func processTouch(_ touch: UITouch) {
+        if items.isEmpty {
+            return
+        }
         let location = touch.location(in: indexView)
         let progress = max(0, min(location.y / indexView.bounds.height, 0.9999))
         let idx = Int(floor(progress * CGFloat(items.count)))
