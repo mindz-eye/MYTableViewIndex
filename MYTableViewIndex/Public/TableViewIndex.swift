@@ -42,7 +42,7 @@ open class TableViewIndex : UIControl {
             return style.font
         }
         set {
-            updateStyle(font: newValue, itemSpacing: style.itemSpacing)
+            style = ConcreteStyle(font: newValue, itemSpacing: style.itemSpacing)
         }
     }
     
@@ -52,7 +52,7 @@ open class TableViewIndex : UIControl {
             return style.itemSpacing
         }
         set {
-            updateStyle(font: style.font, itemSpacing: newValue)
+            style = ConcreteStyle(font: style.font, itemSpacing: newValue)
         }
     }
     
@@ -84,19 +84,26 @@ open class TableViewIndex : UIControl {
     }
 
     /// The list of all items provided by the data source.
-    public private(set) var items: [UIView] = []
+    public private(set) var items: [UIView] = [] {
+        didSet {
+            setNeedsLayout()
+        }
+    }
     
     /// The list of items currently displayed by the table index.
     public var displayedItems: [UIView] {
         return indexView.items
     }
     
-    private var truncation: Truncation<UIView>?
+    private var truncation: Truncation<UIView>? {
+        didSet {
+            setNeedsLayout()
+        }
+    }
     
     private var style: Style! {
         didSet {
             indexView.style = style
-            updateVisibleItems()
             setNeedsLayout()
         }
     }
@@ -123,7 +130,7 @@ open class TableViewIndex : UIControl {
         backgroundColor = UIColor.clear
         
         addDefaultBackgroundView()
-        updateStyle(font: nil, itemSpacing: nil)
+        style = ConcreteStyle()
         
         isExclusiveTouch = true
         isMultipleTouchEnabled = false
@@ -143,9 +150,7 @@ open class TableViewIndex : UIControl {
     public func reloadData() {
         items = queryItems()
         truncation = queryTruncation()
-        
-        applyStyle()
-        updateVisibleItems()
+        indexView.style = style
         setNeedsLayout()
     }
     
@@ -168,18 +173,7 @@ open class TableViewIndex : UIControl {
             return truncationItemClass.init()
         })
     }
-    
-    private func updateStyle(font: UIFont?, itemSpacing: CGFloat?) {
-        style = ConcreteStyle(font: font, itemSpacing: itemSpacing)
-        applyStyle()
-    }
-    
-    private func applyStyle() {
-        for item in items {
-            item.applyStyle(style)
-        }
-    }
-    
+        
     /// Calculates a set of items suitable for displaying in the current frame. If there is not enough space
     /// to display all the provided items, some of the items are replaced with a special truncation item. To
     /// customize the class of truncation item, use the corresponding TableViewIndexDataSource method.

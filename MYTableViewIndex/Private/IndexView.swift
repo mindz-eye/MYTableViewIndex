@@ -18,6 +18,7 @@ class IndexView : UIView {
     
     var style: Style? {
         didSet {
+            applyStyleToItems()
             updateLayout()
         }
     }
@@ -72,6 +73,7 @@ class IndexView : UIView {
             removeItem(item)
         }
         
+        applyStyleToItems()
         updateLayout()
         
         guard var layout = layout else {
@@ -81,6 +83,14 @@ class IndexView : UIView {
         
         for (index, item) in items.enumerated() where !oldItems.contains(item) {
             addItem(item, withFrame: layout.itemFrames[index])
+        }
+    }
+    
+    private func applyStyleToItems() {
+        if let style = style {
+            for item in items {
+                item.applyStyle(style)
+            }
         }
     }
     

@@ -18,4 +18,8 @@ class ConcreteStyle : Style {
         self.font = font ?? StyleDefaults.font
         self.itemSpacing = itemSpacing ?? StyleDefaults.itemSpacing
     }
+    
+    convenience init() {
+        self.init(font: nil, itemSpacing: nil)
+    }
 }
