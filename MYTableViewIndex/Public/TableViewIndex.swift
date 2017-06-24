@@ -30,7 +30,7 @@ open class TableViewIndex : UIControl {
             if let view = backgroundView {
                 insertSubview(view, at: 0)
             } else {
-                addDefaultBackgroundView()
+                backgroundView = BackgroundView()
             }
         }
     }
@@ -129,18 +129,11 @@ open class TableViewIndex : UIControl {
     private func commonInit() {
         backgroundColor = UIColor.clear
         
-        addDefaultBackgroundView()
+        backgroundView = BackgroundView()
         style = ConcreteStyle()
         
         isExclusiveTouch = true
         isMultipleTouchEnabled = false
-    }
-    
-    private func addDefaultBackgroundView() {
-        let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.9)
-        view.isUserInteractionEnabled = false
-        backgroundView = view
     }
     
     // MARK: - Updates
