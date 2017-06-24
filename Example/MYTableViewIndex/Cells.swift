@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Cell : UITableViewCell {
+class TableCell : UITableViewCell {
     
     func setupWithItem(_ item: Item) {
         textLabel?.text = item as? String
