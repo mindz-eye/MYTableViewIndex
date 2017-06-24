@@ -10,13 +10,13 @@ import UIKit
 import MYTableViewIndex
 
 enum ExampleType : String {
-    case comparison = "comparison"
-    case customBackground = "background"
-    case hidingIndex = "autohide"
-    case coloredIndex = "color"
-    case imageIndex = "image"
-    case largeFont = "large"
-    case collectionView = "collectionView"
+    case comparison
+    case customBackground
+    case hidingIndex
+    case coloredIndex
+    case imageIndex
+    case largeFont
+    case collectionView
 }
 
 protocol Example {
