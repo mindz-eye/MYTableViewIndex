@@ -19,3 +19,12 @@ class Cell : UITableViewCell {
         return item is UIColor ? 100 : 44
     }
 }
+
+class CollectionCell : UICollectionViewCell {
+    
+    @IBOutlet weak var textLabel: UILabel!
+
+    func setupWithItem(_ item: Item) {
+        textLabel?.text = item as? String
+    }
+}
