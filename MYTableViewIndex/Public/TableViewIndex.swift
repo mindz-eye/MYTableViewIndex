@@ -232,8 +232,7 @@ open class TableViewIndex : UIControl {
     
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first , bounds.contains(touch.location(in: self)) {
-            currentTouch = touch
-            isHighlighted = true
+            beginTouch(touch)
             processTouch(touch)
         }
         super.touchesBegan(touches, with: event)
@@ -260,6 +259,12 @@ open class TableViewIndex : UIControl {
         super.touchesCancelled(touches, with: event)
     }
     
+    private func beginTouch(_ touch: UITouch) {
+        currentTouch = touch
+        isHighlighted = true
+        prepareFeedbackGenerator()
+    }
+    
     private func processTouch(_ touch: UITouch) {
         if items.isEmpty {
             return
@@ -272,6 +277,8 @@ open class TableViewIndex : UIControl {
             return
         }
         currentIndex = idx
+
+        notifyFeedbackGenerator()
         
         if let delegate = self.delegate
             , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelect:at:))) {
@@ -284,6 +291,37 @@ open class TableViewIndex : UIControl {
         currentTouch = nil
         currentIndex = nil
         isHighlighted = false
+        cleanupFeedbackGenerator()
+    }
+    
+    // MARK: - Taptic Engine support
+    
+    @available(iOS 10.0, *)
+    private var feedbackGenerator: UISelectionFeedbackGenerator {
+        if feedbackGeneratorInstance == nil {
+            feedbackGeneratorInstance = UISelectionFeedbackGenerator()
+        }
+        return feedbackGeneratorInstance as! UISelectionFeedbackGenerator
+    }
+    private var feedbackGeneratorInstance: Any? = nil
+    
+    private func prepareFeedbackGenerator() {
+        if #available(iOS 10.0, *) {
+            feedbackGenerator.prepare()
+        }
+    }
+    
+    private func notifyFeedbackGenerator() {
+        if #available(iOS 10.0, *) {
+            feedbackGenerator.selectionChanged()
+            feedbackGenerator.prepare()
+        }
+    }
+    
+    private func cleanupFeedbackGenerator() {
+        if #available(iOS 10.0, *) {
+            feedbackGeneratorInstance = nil
+        }
     }
 }
 

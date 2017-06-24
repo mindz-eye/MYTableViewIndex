@@ -35,7 +35,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
         
         dataSource = example.dataSource
         
-        tableViewIndexController = TableViewIndexController(tableView: tableView)
+        tableViewIndexController = TableViewIndexController(scrollView: tableView)
         tableViewIndexController.tableViewIndex.delegate = self
         
         example.setupTableIndexController(tableViewIndexController)
@@ -66,14 +66,14 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        if let dataCell = cell as? Cell {
+        if let dataCell = cell as? TableCell {
             dataCell.setupWithItem(dataSource.itemAtIndexPath(indexPath)!)
         }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Cell.heightForItem(dataSource.itemAtIndexPath(indexPath)!)
+        return TableCell.heightForItem(dataSource.itemAtIndexPath(indexPath)!)
     }
     
     override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
