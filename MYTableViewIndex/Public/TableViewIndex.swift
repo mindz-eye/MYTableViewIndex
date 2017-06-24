@@ -11,6 +11,8 @@ import UIKit
 @objc(MYTableViewIndex)
 open class TableViewIndex : UIControl {
     
+    // MARK: - Properties
+    
     /// Data source for the table index object. See TableViewIndexDataSource protocol for details.
     @IBOutlet public weak var dataSource: TableViewIndexDataSource? {
         didSet {
@@ -21,8 +23,8 @@ open class TableViewIndex : UIControl {
     /// Delegate for the table index object. See TableViewIndexDelegate protocol for details.
     @IBOutlet public weak var delegate: TableViewIndexDelegate?
     
-    /// Background view is displayed below the index items and can be set to any UIView.
-    /// If not set or was set to nil, creates a default view which mimics a system index appearance.
+    /// Background view is displayed below the index items and can customized with any UIView.
+    /// If not set or set to nil, creates a default view which mimics the system index appearance.
     public var backgroundView: UIView? {
         didSet {
             if let view = backgroundView {
@@ -55,9 +57,11 @@ open class TableViewIndex : UIControl {
     }
     
     /// The distance that index items are inset from the enclosing background view. The property
-    /// doesn't change the position of index items. Instead, it changes size of the background view
-    /// to match the inset. In other words, the background view "wraps" the index content.
-    /// Set inset value to CGFloat.max to make background view fill all the available space on that side.
+    /// doesn't change the position of index items. Instead, it changes the size of the background view
+    /// to match the inset. In other words, the background view "wraps" the content. Affects intrinsic
+    /// content size.
+    /// Set inset value to CGFloat.max to make the background view fill all the available space.
+    /// Default value matches the system index appearance.
     public var indexInset = UIEdgeInsets(top: CGFloat.greatestFiniteMagnitude, left: pixelScale(), bottom: CGFloat.greatestFiniteMagnitude, right: pixelScale()) {
         didSet {
             setNeedsLayout()
@@ -65,7 +69,8 @@ open class TableViewIndex : UIControl {
     }
 
     /// The distance that index items are shifted inside the enclosing background view. The property
-    /// changes the position of items and doesn't affect the size of the background view.
+    /// changes position of the items and doesn't affect the size of the background view.
+    /// Default value matches the system index appearance.
     public var indexOffset = UIOffset(horizontal: 0.0, vertical: 1.0) {
         didSet {
             setNeedsLayout()
@@ -78,10 +83,10 @@ open class TableViewIndex : UIControl {
         return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
     }
 
-    /// The array of all items provided by data source.
+    /// The list of all items provided by the data source.
     public private(set) var items: [UIView] = []
     
-    /// The array of items currently displayed by table index.
+    /// The list of items currently displayed by the table index.
     public var displayedItems: [UIView] {
         return indexView.items
     }
@@ -100,7 +105,9 @@ open class TableViewIndex : UIControl {
         let view = IndexView()
         self.addSubview(view)
         return view
-        }()
+    }()
+    
+    // MARK: - Initialization
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -207,7 +214,7 @@ open class TableViewIndex : UIControl {
                           size: CGSize(width: width, height: height))
         rect.centerY = indexFrame.centerY
         
-        // Check if background view should fill all the available space
+        // Check if the background view should fill all the available space
         if indexInset.top == CGFloat.greatestFiniteMagnitude {
             rect.top = 0.0
         }
@@ -335,16 +342,20 @@ open class TableViewIndex : UIControl {
 @objc(MYTableViewIndexDataSource)
 public protocol TableViewIndexDataSource : NSObjectProtocol {
     
-    /// Provides a set of items to display in the table index. Default set of views tuned for
-    /// displaying text, images, search indicator and truncation items are provided.
-    /// Can be any view basically, but please avoid passing UITableViews :)
-    /// See IndexItem protocol for item customization points.
+    /// Provides a set of items to display in the table index. The library provides
+    /// a default set of views tuned for displaying text, images, search indicator and
+    /// truncation items.
+    /// You can use any UIView subclass as an item basically, though using UITableView
+    /// is not recommended :)
+    /// Check IndexItem protocol for item customization points.
     func indexItems(for tableViewIndex: TableViewIndex) -> [UIView]
     
-    /// Provides a class for truncation items. Truncation items are used when there is not enough
-    /// space for displaying all the items provided by the data source. If this happens, table index
-    /// omits some of the items from being displayed and inserts truncation items instead.
-    /// By default table index uses TruncationItem class, tuned to match native index apperance.
+    /// Provides a class for truncation items. Truncation items are useful when there's not enough
+    /// space for displaying all the items provided by the data source. When this happens, table
+    /// index omits some of the items from being displayed and inserts one or more truncation items
+    /// instead.
+    /// Table index uses TruncationItem class by default, which is tuned to match the native index
+    /// appearance.
     @objc optional func truncationItemClass(for tableViewIndex: TableViewIndex) -> AnyClass
 }
 
@@ -352,8 +363,8 @@ public protocol TableViewIndexDataSource : NSObjectProtocol {
 @objc(MYTableViewIndexDelegate)
 public protocol TableViewIndexDelegate : NSObjectProtocol {
     
-    /// Called as a result of recognizing an index touch. Can be used to scroll table view to
-    /// the corresponding section.
+    /// Called as a result of recognizing an index touch. Can be used to scroll table/collection view to
+    /// a corresponding section.
     @objc optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int)
 }
 
