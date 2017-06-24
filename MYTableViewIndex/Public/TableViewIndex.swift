@@ -25,7 +25,7 @@ open class TableViewIndex : UIControl {
     
     /// Background view is displayed below the index items and can customized with any UIView.
     /// If not set or set to nil, creates a default view which mimics the system index appearance.
-    public var backgroundView: UIView? {
+    public var backgroundView: UIView! {
         didSet {
             if let view = backgroundView {
                 insertSubview(view, at: 0)
