@@ -35,16 +35,22 @@ open class TableViewIndex : UIControl {
     
     /// Font for the index view items. If not set or set to nil, uses a default font which is chosen to
     /// match system appearance.
-    public var font: UIFont? {
-        didSet {
-            updateStyle()
+    public var font: UIFont! {
+        get {
+            return style.font
+        }
+        set {
+            updateStyle(font: newValue, itemSpacing: style.itemSpacing)
         }
     }
     
     /// Vertical spacing between the items. Equals to 1 point by default to match system appearance.
-    public var itemSpacing: CGFloat? {
-        didSet {
-            updateStyle()
+    public var itemSpacing: CGFloat! {
+        get {
+            return style.itemSpacing
+        }
+        set {
+            updateStyle(font: style.font, itemSpacing: newValue)
         }
     }
     
@@ -110,7 +116,7 @@ open class TableViewIndex : UIControl {
         backgroundColor = UIColor.clear
         
         addDefaultBackgroundView()
-        updateStyle()
+        updateStyle(font: nil, itemSpacing: nil)
         
         isExclusiveTouch = true
         isMultipleTouchEnabled = false
@@ -157,7 +163,7 @@ open class TableViewIndex : UIControl {
         })
     }
     
-    private func updateStyle() {
+    private func updateStyle(font: UIFont?, itemSpacing: CGFloat?) {
         style = ConcreteStyle(font: font, itemSpacing: itemSpacing)
         applyStyle()
     }

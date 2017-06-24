@@ -8,17 +8,6 @@
 
 import UIKit
 import MYTableViewIndex
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
 
 class TableViewController : UITableViewController, UITextFieldDelegate, TableViewIndexDelegate, ExampleContainer {
     
@@ -147,7 +136,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
     }
     
     fileprivate func dummyItemForNativeTableIndex() -> String {
-        let maxLetterWidth = self.tableViewIndexController.tableViewIndex.font?.lineHeight
+        let maxLetterWidth = self.tableViewIndexController.tableViewIndex.font.lineHeight
         var str = "";
         var size = CGSize()
         while size.width < maxLetterWidth {
