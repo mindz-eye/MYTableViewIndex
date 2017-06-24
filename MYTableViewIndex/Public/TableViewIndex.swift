@@ -126,7 +126,6 @@ open class TableViewIndex : UIControl {
         let view = UIView()
         view.backgroundColor = UIColor.white.withAlphaComponent(0.9)
         view.isUserInteractionEnabled = false
-        insertSubview(view, at: 0)
         backgroundView = view
     }
     
