@@ -35,7 +35,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
         
         dataSource = example.dataSource
         
-        tableViewIndexController = TableViewIndexController(tableView: tableView)
+        tableViewIndexController = TableViewIndexController(scrollView: tableView)
         tableViewIndexController.tableViewIndex.delegate = self
         
         example.setupTableIndexController(tableViewIndexController)
