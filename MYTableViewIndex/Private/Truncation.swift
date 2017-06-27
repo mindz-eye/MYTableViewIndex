@@ -19,7 +19,7 @@ struct Truncation<T: IndexItem> {
     }
     
     func truncate(forHeight height: CGFloat, style: Style) -> [T] {
-        let metrics = Metrics(items: items, style: style)
+        let metrics = ItemMetrics(items: items, style: style)
         
         if (metrics.size.height <= height || height <= 0.0) {
             return items
@@ -59,7 +59,7 @@ struct Truncation<T: IndexItem> {
         return result
     }
     
-    private func calculateAvailableLines(for items: [T], metrics: Metrics, height: CGFloat) -> Int {
+    private func calculateAvailableLines(for items: [T], metrics: ItemMetrics, height: CGFloat) -> Int {
         let lineHeight = metrics.medianSize.height
         let truncationHeight = truncationItemFactory().sizeThatFits(metrics.style.font.my_boundingSize()).height
         

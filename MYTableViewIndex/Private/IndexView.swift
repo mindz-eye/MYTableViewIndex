@@ -31,7 +31,7 @@ class IndexView : UIView {
         }
     }
     
-    private var layout: Layout?
+    private var layout: ItemLayout?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -57,13 +57,13 @@ class IndexView : UIView {
         layout.layout(in: bounds)
         
         for (index, item) in items.enumerated() {
-            item.frame = layout.itemFrames[index]
+            item.frame = layout.frames[index]
         }
     }
     
     private func updateLayout() {
         if style != nil && items.count > 0 {
-            layout = Layout(items: items, style: style!)
+            layout = ItemLayout(items: items, style: style!)
             setNeedsLayout()
         }
     }
@@ -82,7 +82,7 @@ class IndexView : UIView {
         layout.layout(in: bounds)
         
         for (index, item) in items.enumerated() where !oldItems.contains(item) {
-            addItem(item, withFrame: layout.itemFrames[index])
+            addItem(item, withFrame: layout.frames[index])
         }
     }
     

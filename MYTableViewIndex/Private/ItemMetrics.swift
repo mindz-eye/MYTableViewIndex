@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct Metrics {
+struct ItemMetrics {
     
     private(set) var itemSizes = [CGSize]()
     private(set) var size = CGSize()

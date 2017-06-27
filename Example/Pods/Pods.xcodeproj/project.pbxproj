@@ -25,7 +25,7 @@
 		6CD7EE14E2C689F18686DAB7FE646664 /* MYTableViewIndex-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 10C4460402D53352201A905D4DAF3C21 /* MYTableViewIndex-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		762835C6727972935DB122A68B560514 /* ObjCHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73EB9741C3A4E5B770F28F34FA895267 /* ObjCHelpers.swift */; };
 		80877F7B632FFBBA5BB5FC71BD321FA3 /* UIView+SuperviewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF4441A65DCAA41CC4C6FC834B9F8A8 /* UIView+SuperviewHandler.swift */; };
-		AD01CDFD42AF7A1021B105DE0CE2C053 /* Metrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51C2777D2283987CBDB194D5761E76A /* Metrics.swift */; };
+		AD01CDFD42AF7A1021B105DE0CE2C053 /* ItemMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A51C2777D2283987CBDB194D5761E76A /* ItemMetrics.swift */; };
 		B9AE3F417F6661B0A6A7FCE8D8641C22 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C834DBDD08569457CE435A9E0364182D /* Layout.swift */; };
 		E607D2F73FA2AE45E9E4EA74FA6EF231 /* StringItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B2BE30E95468C7DCB9AF04738636885 /* StringItem.swift */; };
 		E76ECE8A283F37B064D6014F98720DDE /* KeyValueObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E72601F6F55CEB72E4AFA4F16E3156A /* KeyValueObserver.swift */; };
@@ -82,7 +82,7 @@
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		941E5C02979829DB343E9F404A29101E /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9AF4441A65DCAA41CC4C6FC834B9F8A8 /* UIView+SuperviewHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewHandler.swift"; sourceTree = "<group>"; };
-		A51C2777D2283987CBDB194D5761E76A /* Metrics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Metrics.swift; sourceTree = "<group>"; };
+		A51C2777D2283987CBDB194D5761E76A /* ItemMetrics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ItemMetrics.swift; sourceTree = "<group>"; };
 		AA198AA03ACD6A376A926B682E444EF3 /* TableViewIndexController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TableViewIndexController.swift; sourceTree = "<group>"; };
 		AF49CA25EC350D0FB022C4EED5F174C4 /* MYTableViewIndex.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = MYTableViewIndex.modulemap; sourceTree = "<group>"; };
 		B0A261E042432409F867D84F92EF0D0A /* Pods-MYTableViewIndex_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MYTableViewIndex_Example-frameworks.sh"; sourceTree = "<group>"; };
@@ -165,7 +165,7 @@
 				4F5AFDF157D98B2310A638B15E7A732A /* ConcreteStyle.swift */,
 				6E9BE69538A4CD599207953DC5CC9F96 /* IndexView.swift */,
 				C834DBDD08569457CE435A9E0364182D /* Layout.swift */,
-				A51C2777D2283987CBDB194D5761E76A /* Metrics.swift */,
+				A51C2777D2283987CBDB194D5761E76A /* ItemMetrics.swift */,
 				79F697E4C8794EF2C4CA6998312CC9E0 /* Truncation.swift */,
 				DCE126E12F55CDAF4039203E738D3E8C /* Utils */,
 			);
@@ -449,7 +449,7 @@
 				1B13D99A783BD215E240AC80A2980A69 /* IndexView.swift in Sources */,
 				E76ECE8A283F37B064D6014F98720DDE /* KeyValueObserver.swift in Sources */,
 				B9AE3F417F6661B0A6A7FCE8D8641C22 /* Layout.swift in Sources */,
-				AD01CDFD42AF7A1021B105DE0CE2C053 /* Metrics.swift in Sources */,
+				AD01CDFD42AF7A1021B105DE0CE2C053 /* ItemMetrics.swift in Sources */,
 				487D51E0394496557DFF2F41C538187C /* MYTableViewIndex-dummy.m in Sources */,
 				762835C6727972935DB122A68B560514 /* ObjCHelpers.swift in Sources */,
 				0FF2FA2E1EFF0878009368A1 /* BackgroundView.swift in Sources */,

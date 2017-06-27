@@ -8,15 +8,15 @@
 
 import UIKit
 
-struct Layout {
+struct ItemLayout {
     
     let items: [IndexItem]
-    let metrics: Metrics
-    var itemFrames = [CGRect]()
+    let metrics: ItemMetrics
+    var frames = [CGRect]()
     
     init(items: [IndexItem], style: Style) {
         self.items = items
-        metrics = Metrics(items: items, style: style)
+        metrics = ItemMetrics(items: items, style: style)
     }
     
     mutating func layout(in rect: CGRect) {
@@ -33,6 +33,6 @@ struct Layout {
             
             yPos += itemRect.height + metrics.style.itemSpacing
         }
-        itemFrames = frames
+        self.frames = frames
     }
 }
