@@ -12,7 +12,7 @@ struct ItemLayout {
     
     let items: [IndexItem]
     let metrics: ItemMetrics
-    var frames = [CGRect]()
+    private(set) var frames = [CGRect]()
     
     init(items: [IndexItem], style: Style) {
         self.items = items
