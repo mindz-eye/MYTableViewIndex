@@ -14,6 +14,10 @@ public protocol Style {
     var font: UIFont { get }
     
     var itemSpacing: CGFloat { get }
+    
+    var indexInset: UIEdgeInsets { get }
+    
+    var indexOffset: UIOffset { get }
 }
 
 struct StyleDefaults {
@@ -22,4 +26,9 @@ struct StyleDefaults {
  
     // Seems like Apple uses this constant and not the actual pixel size value
     static let itemSpacing: CGFloat = 0.5
+    
+    static let indexInset = UIEdgeInsets(top: CGFloat.greatestFiniteMagnitude, left: pixelScale(),
+                                           bottom: CGFloat.greatestFiniteMagnitude, right: pixelScale())
+    
+    static let indexOffset = UIOffset(horizontal: 0.0, vertical: 1.0)
 }

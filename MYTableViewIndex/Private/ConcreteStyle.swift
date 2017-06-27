@@ -14,12 +14,18 @@ class ConcreteStyle : Style {
     
     @objc let itemSpacing: CGFloat
     
-    init(font: UIFont?, itemSpacing: CGFloat?) {
+    @objc let indexInset: UIEdgeInsets
+    
+    @objc let indexOffset: UIOffset
+    
+    init(font: UIFont?, itemSpacing: CGFloat?, indexInset: UIEdgeInsets?, indexOffset: UIOffset?) {
         self.font = font ?? StyleDefaults.font
         self.itemSpacing = itemSpacing ?? StyleDefaults.itemSpacing
+        self.indexInset = indexInset ?? StyleDefaults.indexInset
+        self.indexOffset = indexOffset ?? StyleDefaults.indexOffset
     }
     
     convenience init() {
-        self.init(font: nil, itemSpacing: nil)
+        self.init(font: nil, itemSpacing: nil, indexInset: nil, indexOffset: nil)
     }
 }

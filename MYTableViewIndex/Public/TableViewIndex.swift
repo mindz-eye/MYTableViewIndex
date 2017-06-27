@@ -42,7 +42,7 @@ open class TableViewIndex : UIControl {
             return style.font
         }
         set {
-            style = ConcreteStyle(font: newValue, itemSpacing: style.itemSpacing)
+            style = ConcreteStyle(font: newValue, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: style.indexOffset)
         }
     }
     
@@ -52,7 +52,7 @@ open class TableViewIndex : UIControl {
             return style.itemSpacing
         }
         set {
-            style = ConcreteStyle(font: style.font, itemSpacing: newValue)
+            style = ConcreteStyle(font: style.font, itemSpacing: newValue, indexInset: style.indexInset, indexOffset: style.indexOffset)
         }
     }
     
@@ -62,18 +62,24 @@ open class TableViewIndex : UIControl {
     /// content size.
     /// Set inset value to CGFloat.max to make the background view fill all the available space.
     /// Default value matches the system index appearance.
-    public var indexInset = UIEdgeInsets(top: CGFloat.greatestFiniteMagnitude, left: pixelScale(), bottom: CGFloat.greatestFiniteMagnitude, right: pixelScale()) {
-        didSet {
-            setNeedsLayout()
+    public var indexInset: UIEdgeInsets! {
+        get {
+            return style.indexInset
+        }
+        set {
+            style = ConcreteStyle(font: style.font, itemSpacing: style.itemSpacing, indexInset: newValue, indexOffset: style.indexOffset)
         }
     }
 
     /// The distance that index items are shifted inside the enclosing background view. The property
     /// changes position of the items and doesn't affect the size of the background view.
     /// Default value matches the system index appearance.
-    public var indexOffset = UIOffset(horizontal: 0.0, vertical: 1.0) {
-        didSet {
-            setNeedsLayout()
+    public var indexOffset: UIOffset! {
+        get {
+            return style.indexOffset
+        }
+        set {
+            style = ConcreteStyle(font: style.font, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: newValue)
         }
     }
     
