@@ -27,8 +27,8 @@ struct StyleDefaults {
     // Seems like Apple uses this constant and not the actual pixel size value
     static let itemSpacing: CGFloat = 0.5
     
-    static let indexInset = UIEdgeInsets(top: CGFloat.greatestFiniteMagnitude, left: pixelScale(),
-                                           bottom: CGFloat.greatestFiniteMagnitude, right: pixelScale())
+    static let indexInset = UIEdgeInsets(top: CGFloat.greatestFiniteMagnitude, left: 1.0,
+                                         bottom: CGFloat.greatestFiniteMagnitude, right: 1.0)
     
-    static let indexOffset = UIOffset(horizontal: 0.0, vertical: 1.0)
+    static let indexOffset = UIOffset()
 }
