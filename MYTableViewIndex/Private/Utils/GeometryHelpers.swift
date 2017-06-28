@@ -90,10 +90,39 @@ extension CGFloat {
         let scale = UIScreen.main.scale
         return Darwin.round(self * scale) / scale
     }
+    
+    public func pixelCeiled() -> CGFloat {
+        let scale = UIScreen.main.scale
+        return ceil(self * scale) / scale
+    }
 }
 
 extension CGPoint {
     public func pixelRounded() -> CGPoint {
         return CGPoint(x: x.pixelRounded(), y: y.pixelRounded())
+    }
+    
+    public func pixelCeiled() -> CGPoint {
+        return CGPoint(x: x.pixelCeiled(), y: y.pixelCeiled())
+    }
+}
+
+extension CGSize {
+    public func pixelRounded() -> CGSize {
+        return CGSize(width: width.pixelRounded(), height: height.pixelRounded())
+    }
+    
+    public func pixelCeiled() -> CGSize {
+        return CGSize(width: width.pixelCeiled(), height: height.pixelCeiled())
+    }
+}
+
+extension CGRect {
+    public func pixelRounded() -> CGRect {
+        return CGRect(origin: origin.pixelRounded(), size: size.pixelRounded())
+    }
+    
+    public func pixelCeiled() -> CGRect {
+        return CGRect(origin: origin.pixelCeiled(), size: size.pixelCeiled())
     }
 }
