@@ -80,20 +80,20 @@ open class StringItem : UILabel {
         context?.setStrokeColor(textColor.cgColor)
         
         // The constants below are carefully tuned to match the Apple's "pound sign" icon
-        let horMargin: CGFloat = roundToPixelBorder(1.5)
-        let verMargin: CGFloat = roundToPixelBorder(2.5)
+        let horMargin = CGFloat(1.5).pixelRounded()
+        let verMargin = CGFloat(2.5).pixelRounded()
         
-        let x1 = roundToPixelBorder(rect.x + horMargin)
-        let y1 = roundToPixelBorder(rect.y)
+        let x1 = (rect.x + horMargin).pixelRounded()
+        let y1 = (rect.y).pixelRounded()
         
-        let x2 = roundToPixelBorder(rect.x + rect.width - horMargin)
-        let y2 = roundToPixelBorder(rect.y + rect.height)
+        let x2 = (rect.x + rect.width - horMargin).pixelRounded()
+        let y2 = (rect.y + rect.height).pixelRounded()
         
-        let x3 = roundToPixelBorder(rect.x)
-        let y3 = roundToPixelBorder(rect.y + verMargin)
+        let x3 = (rect.x).pixelRounded()
+        let y3 = (rect.y + verMargin).pixelRounded()
         
-        let x4 = roundToPixelBorder(rect.x + rect.width)
-        let y4 = roundToPixelBorder(rect.y + rect.height - verMargin)
+        let x4 = (rect.x + rect.width).pixelRounded()
+        let y4 = (rect.y + rect.height - verMargin).pixelRounded()
         
         let lineWidth: CGFloat = 1.0 / scale * 2
         

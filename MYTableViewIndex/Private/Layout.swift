@@ -24,7 +24,7 @@ struct ItemLayout<T: IndexItem> {
             
             var frame = CGRect(origin: CGPoint(x: 0, y: height), size: size)
             frame.centerX = bbox.width / 2
-            frame.origin = roundToPixelBorder(frame.origin)
+            frame.origin = frame.origin.pixelRounded()
             
             frames.append(frame)
             

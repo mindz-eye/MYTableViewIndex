@@ -85,11 +85,15 @@ func pixelScale() -> CGFloat {
     return 1.0 / UIScreen.main.scale
 }
 
-func roundToPixelBorder(_ value: CGFloat) -> CGFloat {
-    let scale = UIScreen.main.scale
-    return round(value * scale) / scale
+extension CGFloat {
+    public func pixelRounded() -> CGFloat {
+        let scale = UIScreen.main.scale
+        return Darwin.round(self * scale) / scale
+    }
 }
 
-func roundToPixelBorder(_ point: CGPoint) -> CGPoint {
-    return CGPoint(x: roundToPixelBorder(point.x), y: roundToPixelBorder(point.y))
+extension CGPoint {
+    public func pixelRounded() -> CGPoint {
+        return CGPoint(x: x.pixelRounded(), y: y.pixelRounded())
+    }
 }
