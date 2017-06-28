@@ -9,29 +9,11 @@
 import UIKit
 
 class IndexView : UIView {
-        
-    var items = [UIView]() {
-        didSet {
-            updateWithItems(items, oldItems: oldValue)
-        }
-    }
     
-    var style: Style? {
-        didSet {
-            applyStyleToItems()
-            updateLayout()
-        }
-    }
+    private(set) var items: [UIView]?
+    private(set) var layout: ItemLayout<UIView>?
     
-    override open var intrinsicContentSize: CGSize {
-        if let layout = layout {
-            return layout.metrics.size
-        } else {
-            return CGSize()
-        }
-    }
-    
-    private var layout: ItemLayout?
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -48,58 +30,32 @@ class IndexView : UIView {
         backgroundColor = UIColor.clear
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        guard var layout = layout else {
-            return
-        }
-        layout.layout(in: bounds)
-        
-        for (index, item) in items.enumerated() {
-            item.frame = layout.frames[index]
-        }
-    }
+    // MARK: - Updates
     
-    private func updateLayout() {
-        if style != nil && items.count > 0 {
-            layout = ItemLayout(items: items, style: style!)
-            setNeedsLayout()
-        }
-    }
-    
-    private func updateWithItems(_ items: [UIView], oldItems: [UIView]) {
+    public func reload(with items: [UIView], layout: ItemLayout<UIView>) {
+        let oldItems: [UIView] = self.items ?? []
+        
+        self.items = items
+        self.layout = layout
+        
         for item in oldItems where !items.contains(item) {
             removeItem(item)
         }
-        
-        applyStyleToItems()
-        updateLayout()
-        
-        guard var layout = layout else {
-            return
-        }
-        layout.layout(in: bounds)
-        
         for (index, item) in items.enumerated() where !oldItems.contains(item) {
             addItem(item, withFrame: layout.frames[index])
         }
-    }
-    
-    private func applyStyleToItems() {
-        if let style = style {
-            for item in items {
-                item.applyStyle(style)
-            }
-        }
+        setNeedsLayout()
     }
     
     private func removeItem(_ item: UIView) {
+        guard let items = items else {
+            return
+        }
         // A little trickery to make item removal look nice when performed inside animation block
         CATransaction.setCompletionBlock {
             item.alpha = 1
             
-            if (!self.items.contains(item)) {
+            if (!items.contains(item)) {
                 item.removeFromSuperview()
             }
         }
@@ -115,6 +71,27 @@ class IndexView : UIView {
             item.alpha = 0
         }
         item.alpha = 1
+    }
+    
+    // MARK: - Layout 
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        guard let items = items, let layout = layout else {
+            return
+        }
+        for (index, item) in items.enumerated() {
+            item.frame = layout.frames[index]
+        }
+    }
+    
+    override open var intrinsicContentSize: CGSize {
+        if let layout = layout {
+            return layout.size
+        } else {
+            return CGSize()
+        }
     }
     
     override func sizeThatFits(_ size: CGSize) -> CGSize {

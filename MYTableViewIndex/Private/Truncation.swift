@@ -19,32 +19,40 @@ struct Truncation<T: IndexItem> {
     }
     
     func truncate(forHeight height: CGFloat, style: Style) -> [T] {
-        let metrics = ItemMetrics(items: items, style: style)
+        let layout = ItemLayout(items: items, style: style)
         
-        if (metrics.size.height <= height || height <= 0.0) {
+        if (layout.size.height <= height || height <= 0.0) {
             return items
         }
         
         var itemsToTruncate = items
+
         var availableHeight = height
+        
+        if style.indexInset.top != CGFloat.greatestFiniteMagnitude {
+            availableHeight -= style.indexInset.top
+        }
+        if style.indexInset.bottom != CGFloat.greatestFiniteMagnitude {
+            availableHeight -= style.indexInset.bottom
+        }
         
         var shouldPrependFirstItem = false
         var shouldAppendLastItem = false
         
         if itemsToTruncate.count > 5 {
             if itemsToTruncate[0].blocksEdgeTruncation() {
-                availableHeight -= metrics.itemSizes[0].height
+                availableHeight -= layout.frames[0].height
                 itemsToTruncate.remove(at: 0)
                 shouldPrependFirstItem = true
             }
             if itemsToTruncate.last!.blocksEdgeTruncation() {
-                availableHeight -= metrics.itemSizes.last!.height
+                availableHeight -= layout.frames.last!.height
                 itemsToTruncate.removeLast()
                 shouldAppendLastItem = true
             }
         }
         
-        let linesAvailable = calculateAvailableLines(for: itemsToTruncate, metrics: metrics, height: availableHeight)
+        let linesAvailable = calculateAvailableLines(for: itemsToTruncate, layout: layout, style: style, height: availableHeight)
         if (linesAvailable <= 0) {
             return []
         }
@@ -59,9 +67,9 @@ struct Truncation<T: IndexItem> {
         return result
     }
     
-    private func calculateAvailableLines(for items: [T], metrics: ItemMetrics, height: CGFloat) -> Int {
-        let lineHeight = metrics.medianSize.height
-        let truncationHeight = truncationItemFactory().sizeThatFits(metrics.style.font.my_boundingSize()).height
+    private func calculateAvailableLines(for items: [T], layout: ItemLayout<T>, style: Style, height: CGFloat) -> Int {
+        let lineHeight = self.calculateMedianHeight(for: layout)
+        let truncationHeight = truncationItemFactory().sizeThatFits(style.font.my_boundingSize()).height
         
         var linesAvailable = items.count
         var currHeight = CGFloat.greatestFiniteMagnitude
@@ -71,7 +79,7 @@ struct Truncation<T: IndexItem> {
             let otherItemsCount = CGFloat(linesAvailable / 2)
             
             currHeight = CGFloat(otherItemsCount) * lineHeight + CGFloat(truncationItemsCount) * truncationHeight +
-                metrics.style.itemSpacing * CGFloat(linesAvailable - 1)
+                style.itemSpacing * CGFloat(linesAvailable - 1)
             
             linesAvailable -= 1
         }
@@ -80,6 +88,20 @@ struct Truncation<T: IndexItem> {
             linesAvailable -= 1
         }
         return linesAvailable
+    }
+    
+    private func calculateMedianHeight(for layout: ItemLayout<T>) -> CGFloat {
+        let heights = layout.frames.map { $0.height }.sorted()
+        let count = heights.count
+        if (count > 0) {
+            if count % 2 == 0 {
+                return (heights[count / 2] + heights[count / 2 - 1]) / 2
+            } else {
+                return heights[count / 2]
+            }
+        } else {
+            return 0
+        }
     }
     
     private func doTruncate(_ items: [T], linesAvailable: Int) -> [T] {

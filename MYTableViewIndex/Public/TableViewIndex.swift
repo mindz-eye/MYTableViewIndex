@@ -84,32 +84,31 @@ open class TableViewIndex : UIControl {
     }
     
     override open var intrinsicContentSize: CGSize {
-        let width = indexRect().width + indexInset.left + indexInset.right
+        let layout = ItemLayout(items: items, style: style)
+        let width = layout.size.width + style.indexInset.left + style.indexInset.right
         let minWidth: CGFloat = 44.0
         return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
     }
 
     /// The list of all items provided by the data source.
-    public private(set) var items: [UIView] = [] {
-        didSet {
-            setNeedsLayout()
-        }
-    }
+    public private(set) var items: [UIView] = []
     
-    /// The list of items currently displayed by the table index.
+    /// Returns a set of items suitable for displaying within the current bounds. If there is not enough space
+    /// to display all the items provided by the data source, some of them are replaced with a special truncation item.
+    /// To customize the class of truncation item, use the corresponding TableViewIndexDataSource method.
     public var displayedItems: [UIView] {
-        return indexView.items
-    }
-    
-    private var truncation: Truncation<UIView>? {
-        didSet {
-            setNeedsLayout()
+        if let items = indexView.items {
+            return items
+        } else {
+            return []
         }
     }
+    
+    private var truncation: Truncation<UIView>?
     
     private var style: Style! {
         didSet {
-            indexView.style = style
+            applyStyleToItems()
             setNeedsLayout()
         }
     }
@@ -149,7 +148,7 @@ open class TableViewIndex : UIControl {
     public func reloadData() {
         items = queryItems()
         truncation = queryTruncation()
-        indexView.style = style
+        applyStyleToItems()
         setNeedsLayout()
     }
     
@@ -172,58 +171,39 @@ open class TableViewIndex : UIControl {
             return truncationItemClass.init()
         })
     }
-        
-    /// Calculates a set of items suitable for displaying in the current frame. If there is not enough space
-    /// to display all the provided items, some of the items are replaced with a special truncation item. To
-    /// customize the class of truncation item, use the corresponding TableViewIndexDataSource method.
-    private func updateVisibleItems() {
-        let availableSize = CGSize(width: bounds.width, height: bounds.height)
-        
-        if let truncation = truncation {
-            indexView.items = truncation.truncate(forHeight: availableSize.height, style: style)
-        } else {
-            indexView.items = items
+    
+    private func applyStyleToItems() {
+        for item in items {
+            item.applyStyle(style)
         }
     }
-    
+        
     // MARK: - Layout
     
     /// Returns a drawing area for the index items.
-    open func indexRect() -> CGRect {
-        var frame = CGRect(origin: CGPoint(), size: indexView.sizeThatFits(bounds.size)).integral
-        frame.right = bounds.right - indexInset.right + indexOffset.horizontal
-        frame.centerY = bounds.centerY + indexOffset.vertical
-        return frame
+    public func indexRect() -> CGRect {
+        return indexView.frame
     }
     
     /// Returns a drawing area for the background view.
-    open func backgroundRect() -> CGRect {
-        let indexFrame = indexRect()
-        
-        let width = indexFrame.width + indexInset.left + indexInset.right
-        let height = min(indexFrame.height + indexInset.top + indexInset.bottom, bounds.height)
-        
-        var rect = CGRect(origin: CGPoint(x: bounds.width - width, y: 0),
-                          size: CGSize(width: width, height: height))
-        rect.centerY = indexFrame.centerY
-        
-        // Check if the background view should fill all the available space
-        if indexInset.top == CGFloat.greatestFiniteMagnitude {
-            rect.top = 0.0
-        }
-        if indexInset.bottom == CGFloat.greatestFiniteMagnitude {
-            rect.bottom = bounds.bottom
-        }
-        return rect.integral
+    public func backgroundRect() -> CGRect {
+        return backgroundView.frame
     }
     
     open override func layoutSubviews() {
         super.layoutSubviews()
         
-        updateVisibleItems()
+        var visibleItems = items
         
-        indexView.frame = indexRect()
-        backgroundView?.frame = backgroundRect()
+        if let truncation = truncation {
+            visibleItems = truncation.truncate(forHeight: bounds.height, style: style)
+        }
+        let layout = Layout(items: visibleItems, style: style, bounds: bounds)
+        
+        indexView.frame = layout.contentFrame
+        backgroundView.frame = layout.backgroundFrame
+        
+        indexView.reload(with: visibleItems, layout: layout.itemLayout)
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {

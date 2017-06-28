@@ -8,31 +8,56 @@
 
 import UIKit
 
-struct ItemLayout {
+struct ItemLayout<T: IndexItem> {
     
-    let items: [IndexItem]
-    let metrics: ItemMetrics
-    private(set) var frames = [CGRect]()
+    let frames: [CGRect]
+    let size: CGSize
     
-    init(items: [IndexItem], style: Style) {
-        self.items = items
-        metrics = ItemMetrics(items: items, style: style)
-    }
-    
-    mutating func layout(in rect: CGRect) {
-        var yPos: CGFloat = 0
+    init(items: [T], style: Style) {
+        let bbox = style.font.my_boundingSize()
         
-        var frames = [CGRect]()
+        var height: CGFloat = 0
+        var frames: [CGRect] = [CGRect]()
         
-        for (index, _) in items.enumerated() {
-            var itemRect = CGRect(origin: CGPoint(x: 0, y: yPos), size: metrics.itemSizes[index])
-            itemRect.centerX = rect.centerX
-            itemRect.origin = roundToPixelBorder(itemRect.origin)
+        for item in items {
+            let size = item.sizeThatFits(CGSize(width: bbox.width, height: bbox.height))
             
-            frames.append(itemRect)
+            var frame = CGRect(origin: CGPoint(x: 0, y: height), size: size)
+            frame.centerX = bbox.width / 2
+            frame.origin = roundToPixelBorder(frame.origin)
             
-            yPos += itemRect.height + metrics.style.itemSpacing
+            frames.append(frame)
+            
+            height += frame.height + style.itemSpacing
         }
         self.frames = frames
+        self.size = CGSize(width: bbox.width, height: height)
+    }
+}
+
+struct Layout<T: IndexItem> {
+    
+    let itemLayout: ItemLayout<T>
+    let backgroundFrame: CGRect
+    let contentFrame: CGRect
+
+    init(items: [T], style: Style, bounds: CGRect) {
+        self.itemLayout = ItemLayout(items: items, style: style)
+        
+        var contentFrame = CGRect(origin: CGPoint(), size: itemLayout.size).integral
+        contentFrame.right = bounds.right - style.indexInset.right + style.indexOffset.horizontal
+        contentFrame.centerY = bounds.centerY + style.indexOffset.vertical
+        
+        self.contentFrame = contentFrame
+        
+        var backgroundFrame = contentFrame.insetBy(UIEdgeInsets(top: 0, left: -style.indexInset.left, bottom: 0, right: -style.indexInset.right))
+        
+        let unboundTopInset = style.indexInset.top == CGFloat.greatestFiniteMagnitude
+        let unboundBottomInset = style.indexInset.bottom == CGFloat.greatestFiniteMagnitude
+
+        backgroundFrame.moveTop(unboundTopInset ? 0 : backgroundFrame.top - style.indexInset.top)
+        backgroundFrame.moveBottom(unboundBottomInset ? bounds.bottom : backgroundFrame.bottom + style.indexInset.bottom)
+
+        self.backgroundFrame = backgroundFrame.integral
     }
 }
