@@ -110,6 +110,7 @@ class CustomBackgroundExample : BasicExample {
         
         tableIndexController.tableViewIndex.backgroundView = backgroundView
         tableIndexController.tableViewIndex.indexInset = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+        tableIndexController.tableViewIndex.indexOffset = UIOffset()
         
         tableIndexController.layouter = { tableView, tableIndex in
             var frame = tableIndex.frame
