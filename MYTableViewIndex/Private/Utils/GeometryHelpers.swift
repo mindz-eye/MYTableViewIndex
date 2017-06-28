@@ -61,6 +61,24 @@ extension CGRect {
         rect.size = CGSize(width: width - (inset.left + inset.right), height: height - (inset.top + inset.bottom))
         return rect
     }
+    
+    mutating func moveLeft(_ value: CGFloat) {
+        size = CGSize(width: width + origin.x - value, height: height)
+        left = value
+    }
+    
+    mutating func moveTop(_ value: CGFloat) {
+        size = CGSize(width: width, height: height + origin.y - value)
+        top = value
+    }
+    
+    mutating func moveRight(_ value: CGFloat) {
+        size = CGSize(width: value - x, height: height)
+    }
+    
+    mutating func moveBottom(_ value: CGFloat) {
+        size = CGSize(width: width, height: value - y)
+    }
 }
 
 func pixelScale() -> CGFloat {
