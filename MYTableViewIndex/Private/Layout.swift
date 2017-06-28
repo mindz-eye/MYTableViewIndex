@@ -20,7 +20,7 @@ struct ItemLayout<T: IndexItem> {
         var frames: [CGRect] = [CGRect]()
         
         for item in items {
-            let size = item.sizeThatFits(CGSize(width: bbox.width, height: bbox.height))
+            let size = item.sizeThatFits(CGSize(width: bbox.width, height: bbox.height)).pixelCeiled()
             
             var frame = CGRect(origin: CGPoint(x: 0, y: height), size: size)
             frame.centerX = bbox.width / 2
@@ -31,7 +31,7 @@ struct ItemLayout<T: IndexItem> {
             height += frame.height + style.itemSpacing
         }
         self.frames = frames
-        self.size = CGSize(width: bbox.width, height: height)
+        self.size = CGSize(width: bbox.width, height: height).pixelRounded()
     }
 }
 
@@ -44,7 +44,7 @@ struct Layout<T: IndexItem> {
     init(items: [T], style: Style, bounds: CGRect) {
         self.itemLayout = ItemLayout(items: items, style: style)
         
-        var contentFrame = CGRect(origin: CGPoint(), size: itemLayout.size).integral
+        var contentFrame = CGRect(origin: CGPoint(), size: itemLayout.size)
         contentFrame.right = bounds.right - style.indexInset.right + style.indexOffset.horizontal
         contentFrame.centerY = bounds.centerY + style.indexOffset.vertical
         
@@ -58,6 +58,6 @@ struct Layout<T: IndexItem> {
         backgroundFrame.moveTop(unboundTopInset ? 0 : backgroundFrame.top - style.indexInset.top)
         backgroundFrame.moveBottom(unboundBottomInset ? bounds.bottom : backgroundFrame.bottom + style.indexInset.bottom)
 
-        self.backgroundFrame = backgroundFrame.integral
+        self.backgroundFrame = backgroundFrame
     }
 }
