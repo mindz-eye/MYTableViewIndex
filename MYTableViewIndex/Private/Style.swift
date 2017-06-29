@@ -11,11 +11,8 @@ import UIKit
 class Style : IndexItemAttributes {
     
     let font: UIFont
-    
     let itemSpacing: CGFloat
-    
     let indexInset: UIEdgeInsets
-    
     let indexOffset: UIOffset
     
     init(font: UIFont = StyleDefaults.font,

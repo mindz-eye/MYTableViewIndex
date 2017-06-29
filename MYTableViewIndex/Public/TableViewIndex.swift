@@ -15,9 +15,7 @@ open class TableViewIndex : UIControl {
     
     /// Data source for the table index object. See TableViewIndexDataSource protocol for details.
     @IBOutlet public weak var dataSource: TableViewIndexDataSource? {
-        didSet {
-            reloadData()
-        }
+        didSet { reloadData() }
     }
     
     /// Delegate for the table index object. See TableViewIndexDelegate protocol for details.
@@ -38,22 +36,14 @@ open class TableViewIndex : UIControl {
     /// Font for the index view items. If not set or set to nil, uses a default font which is chosen to
     /// match system appearance.
     public var font: UIFont! {
-        get {
-            return style.font
-        }
-        set {
-            style = style.copy(applying: newValue)
-        }
+        get { return style.font }
+        set { style = style.copy(applying: newValue) }
     }
     
     /// Vertical spacing between the items. Equals to 1 point by default to match system appearance.
     public var itemSpacing: CGFloat! {
-        get {
-            return style.itemSpacing
-        }
-        set {
-            style = style.copy(applying: newValue)
-        }
+        get { return style.itemSpacing }
+        set { style = style.copy(applying: newValue) }
     }
     
     /// The distance that index items are inset from the enclosing background view. The property
@@ -63,33 +53,18 @@ open class TableViewIndex : UIControl {
     /// Set inset value to CGFloat.max to make the background view fill all the available space.
     /// Default value matches the system index appearance.
     public var indexInset: UIEdgeInsets! {
-        get {
-            return style.indexInset
-        }
-        set {
-            style = style.copy(applying: newValue)
-        }
+        get { return style.indexInset }
+        set { style = style.copy(applying: newValue) }
     }
 
     /// The distance that index items are shifted inside the enclosing background view. The property
     /// changes position of the items and doesn't affect the size of the background view.
     /// Default value matches the system index appearance.
     public var indexOffset: UIOffset! {
-        get {
-            return style.indexOffset
-        }
-        set {
-            style = style.copy(applying: newValue)
-        }
+        get { return style.indexOffset }
+        set { style = style.copy(applying: newValue) }
     }
     
-    override open var intrinsicContentSize: CGSize {
-        let layout = ItemLayout(items: items, style: style)
-        let width = layout.size.width + style.indexInset.left + style.indexInset.right
-        let minWidth: CGFloat = 44.0
-        return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
-    }
-
     /// The list of all items provided by the data source.
     public private(set) var items: [UIView] = []
     
@@ -97,11 +72,7 @@ open class TableViewIndex : UIControl {
     /// to display all the items provided by the data source, some of them are replaced with a special truncation item.
     /// To customize the class of truncation item, use the corresponding TableViewIndexDataSource method.
     public var displayedItems: [UIView] {
-        if let items = indexView.items {
-            return items
-        } else {
-            return []
-        }
+        return indexView.items ?? []
     }
     
     private var truncation: Truncation<UIView>?
@@ -203,6 +174,13 @@ open class TableViewIndex : UIControl {
         backgroundView.frame = layout.backgroundFrame
         
         indexView.reload(with: visibleItems, layout: layout.itemLayout)
+    }
+    
+    override open var intrinsicContentSize: CGSize {
+        let layout = ItemLayout(items: items, style: style)
+        let width = layout.size.width + style.indexInset.left + style.indexInset.right
+        let minWidth: CGFloat = 44.0
+        return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
