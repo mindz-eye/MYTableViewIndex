@@ -298,6 +298,7 @@ public protocol TableViewIndexDataSource : NSObjectProtocol {
     /// You can use any UIView subclass as an item basically, though using UITableView
     /// is not recommended :)
     /// Check IndexItem protocol for item customization points.
+    @objc(indexItemsForTableViewIndex:)
     func indexItems(for tableViewIndex: TableViewIndex) -> [UIView]
     
     /// Provides a class for truncation items. Truncation items are useful when there's not enough
@@ -306,7 +307,8 @@ public protocol TableViewIndexDataSource : NSObjectProtocol {
     /// instead.
     /// Table index uses TruncationItem class by default, which is tuned to match the native index
     /// appearance.
-    @objc optional func truncationItemClass(for tableViewIndex: TableViewIndex) -> AnyClass
+    @objc(truncationItemClassForTableViewIndex:)
+    optional func truncationItemClass(for tableViewIndex: TableViewIndex) -> AnyClass
 }
 
 
@@ -315,7 +317,8 @@ public protocol TableViewIndexDelegate : NSObjectProtocol {
     
     /// Called as a result of recognizing an index touch. Can be used to scroll table/collection view to
     /// a corresponding section.
-    @objc optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int)
+    @objc(tableViewIndex:didSelectItem:atIndex:)
+    optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int)
 }
 
 // MARK: - IB support
