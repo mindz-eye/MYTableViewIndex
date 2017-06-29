@@ -22,7 +22,13 @@ public protocol IndexItem {
     func blocksEdgeTruncation() -> Bool
     
     /// Implement this method to apply style attributes of table index to the item.
-    func applyStyle(_ style: Style)
+    func applyAttributes(_ attributes: IndexItemAttributes)
+}
+
+@objc (MYIndexItemAttributes)
+public protocol IndexItemAttributes {
+    
+    var font: UIFont { get }
 }
 
 extension UIView : IndexItem {
@@ -31,6 +37,6 @@ extension UIView : IndexItem {
         return false
     }
     
-    public func applyStyle(_ style: Style) {}
+    public func applyAttributes(_ attributes: IndexItemAttributes) {}
 }
 

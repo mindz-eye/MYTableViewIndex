@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ConcreteStyle : Style {
+class ConcreteStyle : Style, IndexItemAttributes {
     
     @objc let font: UIFont
     

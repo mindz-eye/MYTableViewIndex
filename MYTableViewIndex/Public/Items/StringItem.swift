@@ -26,8 +26,8 @@ open class StringItem : UILabel {
         return text == "#"
     }
     
-    open override func applyStyle(_ style: Style) {
-        font = style.font
+    open override func applyAttributes(_ attributes: IndexItemAttributes) {
+        font = attributes.font
     }
     
     open override func tintColorDidChange() {

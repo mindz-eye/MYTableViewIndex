@@ -108,7 +108,7 @@ open class TableViewIndex : UIControl {
     
     private var style = ConcreteStyle() {
         didSet {
-            applyStyleToItems()
+            applyItemAttributes()
             setNeedsLayout()
         }
     }
@@ -147,7 +147,7 @@ open class TableViewIndex : UIControl {
     public func reloadData() {
         items = queryItems()
         truncation = queryTruncation()
-        applyStyleToItems()
+        applyItemAttributes()
         setNeedsLayout()
     }
     
@@ -171,9 +171,9 @@ open class TableViewIndex : UIControl {
         })
     }
     
-    private func applyStyleToItems() {
+    private func applyItemAttributes() {
         for item in items {
-            item.applyStyle(style)
+            item.applyAttributes(style)
         }
     }
         
