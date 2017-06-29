@@ -1,5 +1,5 @@
 //
-//  ConcreteStyle.swift
+//  Style.swift
 //  TableViewIndex
 //
 //  Created by Makarov Yury on 06/06/16.
@@ -8,15 +8,15 @@
 
 import UIKit
 
-class ConcreteStyle : Style, IndexItemAttributes {
+class Style : IndexItemAttributes {
     
-    @objc let font: UIFont
+    let font: UIFont
     
-    @objc let itemSpacing: CGFloat
+    let itemSpacing: CGFloat
     
-    @objc let indexInset: UIEdgeInsets
+    let indexInset: UIEdgeInsets
     
-    @objc let indexOffset: UIOffset
+    let indexOffset: UIOffset
     
     init(font: UIFont?, itemSpacing: CGFloat?, indexInset: UIEdgeInsets?, indexOffset: UIOffset?) {
         self.font = font ?? StyleDefaults.font
@@ -28,4 +28,17 @@ class ConcreteStyle : Style, IndexItemAttributes {
     convenience init() {
         self.init(font: nil, itemSpacing: nil, indexInset: nil, indexOffset: nil)
     }
+}
+
+struct StyleDefaults {
+    
+    static let font = UIFont.boldSystemFont(ofSize: 11.0)
+    
+    // Seems like Apple uses this constant and not the actual pixel size value
+    static let itemSpacing: CGFloat = 0.5
+    
+    static let indexInset = UIEdgeInsets(top: CGFloat.greatestFiniteMagnitude, left: 1.0,
+                                         bottom: CGFloat.greatestFiniteMagnitude, right: 1.0)
+    
+    static let indexOffset = UIOffset()
 }

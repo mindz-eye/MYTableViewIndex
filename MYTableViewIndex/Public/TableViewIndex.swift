@@ -42,7 +42,7 @@ open class TableViewIndex : UIControl {
             return style.font
         }
         set {
-            style = ConcreteStyle(font: newValue, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: style.indexOffset)
+            style = Style(font: newValue, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: style.indexOffset)
         }
     }
     
@@ -52,7 +52,7 @@ open class TableViewIndex : UIControl {
             return style.itemSpacing
         }
         set {
-            style = ConcreteStyle(font: style.font, itemSpacing: newValue, indexInset: style.indexInset, indexOffset: style.indexOffset)
+            style = Style(font: style.font, itemSpacing: newValue, indexInset: style.indexInset, indexOffset: style.indexOffset)
         }
     }
     
@@ -67,7 +67,7 @@ open class TableViewIndex : UIControl {
             return style.indexInset
         }
         set {
-            style = ConcreteStyle(font: style.font, itemSpacing: style.itemSpacing, indexInset: newValue, indexOffset: style.indexOffset)
+            style = Style(font: style.font, itemSpacing: style.itemSpacing, indexInset: newValue, indexOffset: style.indexOffset)
         }
     }
 
@@ -79,7 +79,7 @@ open class TableViewIndex : UIControl {
             return style.indexOffset
         }
         set {
-            style = ConcreteStyle(font: style.font, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: newValue)
+            style = Style(font: style.font, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: newValue)
         }
     }
     
@@ -106,7 +106,7 @@ open class TableViewIndex : UIControl {
     
     private var truncation: Truncation<UIView>?
     
-    private var style = ConcreteStyle() {
+    private var style = Style() {
         didSet {
             applyItemAttributes()
             setNeedsLayout()
