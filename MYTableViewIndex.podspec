@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'MYTableViewIndex'
-  s.version          = '0.2.0'
+  s.version          = '0.3.0'
   s.summary          = 'A pixel perfect replacement for UITableView section index, written in Swift.'
 
   s.description      = <<-DESC
