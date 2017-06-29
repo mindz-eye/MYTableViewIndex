@@ -106,7 +106,7 @@ open class TableViewIndex : UIControl {
     
     private var truncation: Truncation<UIView>?
     
-    private var style: Style! {
+    private var style = ConcreteStyle() {
         didSet {
             applyStyleToItems()
             setNeedsLayout()
@@ -135,7 +135,6 @@ open class TableViewIndex : UIControl {
         backgroundColor = UIColor.clear
         
         backgroundView = BackgroundView()
-        style = ConcreteStyle()
         
         isExclusiveTouch = true
         isMultipleTouchEnabled = false
