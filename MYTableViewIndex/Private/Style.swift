@@ -18,15 +18,30 @@ class Style : IndexItemAttributes {
     
     let indexOffset: UIOffset
     
-    init(font: UIFont?, itemSpacing: CGFloat?, indexInset: UIEdgeInsets?, indexOffset: UIOffset?) {
-        self.font = font ?? StyleDefaults.font
-        self.itemSpacing = itemSpacing ?? StyleDefaults.itemSpacing
-        self.indexInset = indexInset ?? StyleDefaults.indexInset
-        self.indexOffset = indexOffset ?? StyleDefaults.indexOffset
+    init(font: UIFont = StyleDefaults.font,
+         itemSpacing: CGFloat = StyleDefaults.itemSpacing,
+         indexInset: UIEdgeInsets = StyleDefaults.indexInset,
+         indexOffset: UIOffset = StyleDefaults.indexOffset) {
+        self.font = font
+        self.itemSpacing = itemSpacing
+        self.indexInset = indexInset
+        self.indexOffset = indexOffset
     }
     
-    convenience init() {
-        self.init(font: nil, itemSpacing: nil, indexInset: nil, indexOffset: nil)
+    func copy(applying font: UIFont) -> Style {
+        return Style(font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+    }
+    
+    func copy(applying itemSpacing: CGFloat) -> Style {
+        return Style(font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+    }
+
+    func copy(applying indexInset: UIEdgeInsets) -> Style {
+        return Style(font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+    }
+
+    func copy(applying indexOffset: UIOffset) -> Style {
+        return Style(font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
     }
 }
 

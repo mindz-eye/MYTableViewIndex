@@ -42,7 +42,7 @@ open class TableViewIndex : UIControl {
             return style.font
         }
         set {
-            style = Style(font: newValue, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: style.indexOffset)
+            style = style.copy(applying: newValue)
         }
     }
     
@@ -52,7 +52,7 @@ open class TableViewIndex : UIControl {
             return style.itemSpacing
         }
         set {
-            style = Style(font: style.font, itemSpacing: newValue, indexInset: style.indexInset, indexOffset: style.indexOffset)
+            style = style.copy(applying: newValue)
         }
     }
     
@@ -67,7 +67,7 @@ open class TableViewIndex : UIControl {
             return style.indexInset
         }
         set {
-            style = Style(font: style.font, itemSpacing: style.itemSpacing, indexInset: newValue, indexOffset: style.indexOffset)
+            style = style.copy(applying: newValue)
         }
     }
 
@@ -79,7 +79,7 @@ open class TableViewIndex : UIControl {
             return style.indexOffset
         }
         set {
-            style = Style(font: style.font, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: newValue)
+            style = style.copy(applying: newValue)
         }
     }
     
