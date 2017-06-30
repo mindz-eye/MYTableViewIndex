@@ -52,13 +52,15 @@ open class TableViewIndex : UIControl {
     /// content size.
     /// Set inset value to CGFloat.max to make the background view fill all the available space.
     /// Default value matches the system index appearance.
+    /// Left and right values are flipped when using right-to-left user interface direction.
     public var indexInset: UIEdgeInsets! {
         get { return style.indexInset }
         set { style = style.copy(applying: newValue) }
     }
 
-    /// The distance that index items are shifted inside the enclosing background view. The property
-    /// changes position of the items and doesn't affect the size of the background view.
+    /// The distance from the left (or right in case of right-to-left languages) border of the background view
+    /// for which index items are shifted inside it.
+    /// The property only affects the position of the index items and doesn't change the size of the background view.
     /// Default value matches the system index appearance.
     public var indexOffset: UIOffset! {
         get { return style.indexOffset }
@@ -77,7 +79,7 @@ open class TableViewIndex : UIControl {
     
     private var truncation: Truncation<UIView>?
     
-    private var style = Style() {
+    private var style: Style! {
         didSet {
             applyItemAttributes()
             setNeedsLayout()
@@ -105,6 +107,7 @@ open class TableViewIndex : UIControl {
     private func commonInit() {
         backgroundColor = UIColor.clear
         
+        style = Style(userInterfaceDirection: UIView.my_userInterfaceLayoutDirection(for: self))
         backgroundView = BackgroundView()
         
         isExclusiveTouch = true
@@ -185,6 +188,15 @@ open class TableViewIndex : UIControl {
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize(width: intrinsicContentSize.width, height: size.height)
+    }
+    
+    @available(iOS 9.0, *)
+    open override var semanticContentAttribute: UISemanticContentAttribute {
+        get { return super.semanticContentAttribute }
+        set {
+            super.semanticContentAttribute = newValue
+            style = style.copy(applying: UIView.my_userInterfaceLayoutDirection(for: self))
+        }
     }
     
     // MARK: - Touches

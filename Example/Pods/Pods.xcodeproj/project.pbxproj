@@ -11,6 +11,7 @@
 		03F565B01E167D18C8981C490163C225 /* TableViewIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E64A368E0898BBA4EA050627A642FE /* TableViewIndex.swift */; };
 		0ADB4FA8F3A0E66B1F6AE4F23A075E0B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
 		0FF2FA2E1EFF0878009368A1 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF2FA2D1EFF0878009368A1 /* BackgroundView.swift */; };
+		0FF661881F06F31300245460 /* UIView+UserInterfaceDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF661871F06F31300245460 /* UIView+UserInterfaceDirection.swift */; };
 		14D91AC21A175E52F4D5856EF3FCA817 /* Pods-MYTableViewIndex_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = EA634FBE8E97A0D086EBF99BEF342774 /* Pods-MYTableViewIndex_Example-dummy.m */; };
 		18E0C4595BF1242C20136DA5023DE761 /* IndexItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3320DC9812F54E0C5AF6ECFADA9EF276 /* IndexItem.swift */; };
 		1B13D99A783BD215E240AC80A2980A69 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9BE69538A4CD599207953DC5CC9F96 /* IndexView.swift */; };
@@ -50,6 +51,7 @@
 		0FA2EC8565639DA6B8E5D57D37C44A9C /* Pods-MYTableViewIndex_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MYTableViewIndex_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		0FC9911A4D8B18FB642F4C9F27A4B350 /* Pods-MYTableViewIndex_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MYTableViewIndex_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		0FF2FA2D1EFF0878009368A1 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
+		0FF661871F06F31300245460 /* UIView+UserInterfaceDirection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+UserInterfaceDirection.swift"; sourceTree = "<group>"; };
 		10C4460402D53352201A905D4DAF3C21 /* MYTableViewIndex-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MYTableViewIndex-umbrella.h"; sourceTree = "<group>"; };
 		139FD566C4ABCCD62BDEE8276B7F428E /* Pods_MYTableViewIndex_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MYTableViewIndex_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CEA5E1720E9C31B49439E901550B556 /* TruncationItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TruncationItem.swift; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				73EB9741C3A4E5B770F28F34FA895267 /* ObjCHelpers.swift */,
 				243A6F61C72E484D9DBA16467FB27F6C /* UIFont+Helpers.swift */,
 				9AF4441A65DCAA41CC4C6FC834B9F8A8 /* UIView+SuperviewHandler.swift */,
+				0FF661871F06F31300245460 /* UIView+UserInterfaceDirection.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -437,6 +440,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5DF9AB83B0371BB79CBB4C89EB80958C /* Style.swift in Sources */,
+				0FF661881F06F31300245460 /* UIView+UserInterfaceDirection.swift in Sources */,
 				ED4B2D64BD40DA0357435DDCC3FA8F40 /* GeometryHelpers.swift in Sources */,
 				00B8B5AC0C78C5E2F1AC135997640A4B /* ImageItem.swift in Sources */,
 				18E0C4595BF1242C20136DA5023DE761 /* IndexItem.swift in Sources */,

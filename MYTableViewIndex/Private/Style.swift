@@ -10,35 +10,42 @@ import UIKit
 
 class Style : IndexItemAttributes {
     
+    let userInterfaceDirection: UIUserInterfaceLayoutDirection
     let font: UIFont
     let itemSpacing: CGFloat
     let indexInset: UIEdgeInsets
     let indexOffset: UIOffset
     
-    init(font: UIFont = StyleDefaults.font,
+    init(userInterfaceDirection: UIUserInterfaceLayoutDirection,
+         font: UIFont = StyleDefaults.font,
          itemSpacing: CGFloat = StyleDefaults.itemSpacing,
          indexInset: UIEdgeInsets = StyleDefaults.indexInset,
          indexOffset: UIOffset = StyleDefaults.indexOffset) {
+        self.userInterfaceDirection = userInterfaceDirection
         self.font = font
         self.itemSpacing = itemSpacing
         self.indexInset = indexInset
         self.indexOffset = indexOffset
     }
     
+    func copy(applying userInterfaceDirection: UIUserInterfaceLayoutDirection) -> Style {
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+    }
+    
     func copy(applying font: UIFont) -> Style {
-        return Style(font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
     }
     
     func copy(applying itemSpacing: CGFloat) -> Style {
-        return Style(font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
     }
 
     func copy(applying indexInset: UIEdgeInsets) -> Style {
-        return Style(font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
     }
 
     func copy(applying indexOffset: UIOffset) -> Style {
-        return Style(font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
     }
 }
 

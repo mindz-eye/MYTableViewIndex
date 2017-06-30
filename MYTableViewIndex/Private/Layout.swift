@@ -45,7 +45,11 @@ struct Layout<T: IndexItem> {
         self.itemLayout = ItemLayout(items: items, style: style)
         
         var contentFrame = CGRect(origin: CGPoint(), size: itemLayout.size)
-        contentFrame.right = bounds.right - style.indexInset.right + style.indexOffset.horizontal
+        if style.userInterfaceDirection == .rightToLeft {
+            contentFrame.left = bounds.left + style.indexInset.right + style.indexOffset.horizontal
+        } else {
+            contentFrame.right = bounds.right - style.indexInset.right + style.indexOffset.horizontal
+        }
         contentFrame.centerY = bounds.centerY + style.indexOffset.vertical
         
         self.contentFrame = contentFrame

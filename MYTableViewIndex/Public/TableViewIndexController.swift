@@ -118,16 +118,22 @@ public class TableViewIndexController : NSObject {
         let width = tableFrame.width - (inset.left + inset.right)
         let height = tableFrame.height - (inset.top + inset.bottom)
         
-        layout(in: CGRect(x: tableFrame.x, y: tableFrame.y + inset.top, width: width, height: height))
+        layout(in: CGRect(x: tableFrame.x + inset.left, y: tableFrame.y + inset.top, width: width, height: height))
     }
     
     private func layout(in rect: CGRect) {
         let tableIndexSize = tableViewIndex.sizeThatFits(rect.size)
         
-        var frame = CGRect(origin: CGPoint(x: rect.right - tableIndexSize.width, y: rect.y), size: tableIndexSize)
+        let isRightToLeft = UIView.my_userInterfaceLayoutDirection(for: tableViewIndex) == .rightToLeft
+        
+        let trailing = isRightToLeft ? rect.left : rect.right - tableIndexSize.width
+        
+        var frame = CGRect(origin: CGPoint(x: trailing, y: rect.y), size: tableIndexSize)
         
         if hidden {
-            frame.right = frame.right + tableViewIndex.backgroundRect().width
+            frame.right = isRightToLeft
+                ? frame.left - tableViewIndex.backgroundRect().width
+                : frame.right + tableViewIndex.backgroundRect().width
         }
         tableViewIndex.frame = frame
         

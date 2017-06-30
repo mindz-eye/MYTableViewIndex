@@ -114,7 +114,11 @@ class CustomBackgroundExample : BasicExample {
         
         tableIndexController.layouter = { tableView, tableIndex in
             var frame = tableIndex.frame
-            frame.origin = CGPoint(x: frame.origin.x - 3, y: frame.origin.y)
+            if (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft) {
+                frame.origin = CGPoint(x: frame.origin.x + 3, y: frame.origin.y)
+            } else {
+                frame.origin = CGPoint(x: frame.origin.x - 3, y: frame.origin.y)
+            }
             tableIndex.frame = frame
         };
         
