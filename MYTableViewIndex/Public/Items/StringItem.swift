@@ -55,6 +55,8 @@ open class StringItem : UILabel {
         }
     }
     
+    // MARK: - # Sign
+    
     /// Handle # sign in a special way to match native index appearance. It's not clear why
     /// Apple uses a bitmap instead of a font glyph for this character - most likely due to
     /// the blurry look of the symbol on non-retina devices. Obviously, this custom shape
@@ -70,9 +72,9 @@ open class StringItem : UILabel {
         
         let scale = UIScreen.main.scale;
         
-        // Why do I use image context instead of direct drawing into the layer? Fair question - I just
-        // didn't get how to draw the exact copy of Apple's `#` bitmap on 3x devices. This little hack -
-        // drawing at 2x and than upscaling the image - gives an acceptable result.
+        // Why use a separate image context for drawing? That's because I didn't get
+        // how to draw the exact copy of Apple's `#` bitmap on 3x devices. This little hack -
+        // drawing at 2x and then upscaling the image - gives an acceptable result.
         UIGraphicsBeginImageContextWithOptions(rect.size, false, min(scale, 2.0))
         
         let context = UIGraphicsGetCurrentContext()

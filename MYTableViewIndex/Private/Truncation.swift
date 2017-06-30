@@ -68,7 +68,7 @@ struct Truncation<T: IndexItem> {
     }
     
     private func calculateAvailableLines(for items: [T], layout: ItemLayout<T>, style: Style, height: CGFloat) -> Int {
-        let lineHeight = self.calculateMedianHeight(for: layout)
+        let lineHeight = self.calculateMedianLineHeight(for: layout)
         let truncationHeight = truncationItemFactory().sizeThatFits(style.font.my_boundingSize()).height
         
         var linesAvailable = items.count
@@ -90,7 +90,7 @@ struct Truncation<T: IndexItem> {
         return linesAvailable
     }
     
-    private func calculateMedianHeight(for layout: ItemLayout<T>) -> CGFloat {
+    private func calculateMedianLineHeight(for layout: ItemLayout<T>) -> CGFloat {
         let heights = layout.frames.map { $0.height }.sorted()
         let count = heights.count
         if (count > 0) {
