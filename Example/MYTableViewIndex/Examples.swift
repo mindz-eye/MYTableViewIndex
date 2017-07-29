@@ -10,12 +10,13 @@ import UIKit
 import MYTableViewIndex
 
 enum ExampleType : String {
-    case comparison = "comparison"
-    case customBackground = "background"
-    case hidingIndex = "autohide"
-    case coloredIndex = "color"
-    case imageIndex = "image"
-    case largeFont = "large"
+    case comparison
+    case customBackground
+    case hidingIndex
+    case coloredIndex
+    case imageIndex
+    case largeFont
+    case collectionView
 }
 
 protocol Example {
@@ -33,7 +34,6 @@ protocol Example {
     func trackSelectedSections(_ sections: Set<Int>)
 }
 
-
 class BasicExample : Example {
     
     var dataSource: DataSource {
@@ -45,7 +45,7 @@ class BasicExample : Example {
     }
 
     var hasSearchIndex: Bool {
-        return true
+        return false
     }
     
     func mapIndexItemToSection(_ indexItem: IndexItem, index: NSInteger) -> Int {
@@ -59,6 +59,12 @@ class BasicExample : Example {
     func trackSelectedSections(_ sections: Set<Int>) {}
 }
 
+class SearchExample : BasicExample {
+    
+    override var hasSearchIndex: Bool {
+        return true
+    }
+}
 
 class BackgroundView : UIView {
     
@@ -104,10 +110,15 @@ class CustomBackgroundExample : BasicExample {
         
         tableIndexController.tableViewIndex.backgroundView = backgroundView
         tableIndexController.tableViewIndex.indexInset = UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3)
+        tableIndexController.tableViewIndex.indexOffset = UIOffset()
         
         tableIndexController.layouter = { tableView, tableIndex in
             var frame = tableIndex.frame
-            frame.origin = CGPoint(x: frame.origin.x - 3, y: frame.origin.y)
+            if (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft) {
+                frame.origin = CGPoint(x: frame.origin.x + 3, y: frame.origin.y)
+            } else {
+                frame.origin = CGPoint(x: frame.origin.x - 3, y: frame.origin.y)
+            }
             tableIndex.frame = frame
         };
         
@@ -132,13 +143,9 @@ class CustomBackgroundExample : BasicExample {
             }
         })
     }
-    
-    override var hasSearchIndex: Bool {
-        return false
-    }
 }
 
-class LargeFontExample : BasicExample {
+class LargeFontExample : SearchExample {
     
     override func setupTableIndexController(_ tableIndexController: TableViewIndexController) {
         super.setupTableIndexController(tableIndexController)
@@ -158,7 +165,7 @@ class AutohidingIndexExample : BasicExample {
     }
 }
 
-class ColoredIndexExample : BasicExample {
+class ColoredIndexExample : SearchExample {
     
     override var indexDataSource: TableViewIndexDataSource {
         return ColoredIndexDataSource()
@@ -166,10 +173,6 @@ class ColoredIndexExample : BasicExample {
 }
 
 class ImageIndexExample : BasicExample {
-    
-    override var hasSearchIndex: Bool {
-        return false
-    }
     
     override var indexDataSource: TableViewIndexDataSource {
         return ImageIndexDataSource()
@@ -193,6 +196,8 @@ func exampleByType(_ type: ExampleType) -> Example {
     case .largeFont:
         return LargeFontExample()
     case .comparison:
+        return SearchExample()
+    case .collectionView:
         return BasicExample()
     }
 }

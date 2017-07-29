@@ -12,9 +12,12 @@ MYTableViewIndex is a re-implementation of UITableView section index. This contr
 ## Features
 
 * Can display images
-* Fully customizable. E.g, you can set your font, add custom background view or even add your own type of items
-* Supports both UITableViewController and UIViewController
-* Includes TableViewIndexController class for simplified integration with UITableView
+* Fully customizable: use custom fonts, background views, add your own type of items
+* Compatible with any UIScrollView subclass
+* Works properly with UITableViewController and UICollectionViewController
+* Automatic layout, inset management and keyboard avoidance (via TableViewIndexController)
+* Right-to-left languages support
+* Haptic Feedback support
 
 Below are the screenshots for some of the features:
 <br>
@@ -37,16 +40,16 @@ let tableViewIndex = tableViewIndex(frame: CGRect())
 view.addSubview(tableViewIndex)
 ````
 
-Note that in this case index view should be aligned to UITableView either manually or by setting up layout constraints. 
+Note that in this case no layout is done automatically and all the required index view alignment is completely up to you. 
 
 
 #### Using TableViewIndexController
 
-Things get more complicated when dealing with UITableViewController. The root view of this view controller is UITableView and adding your own view to UITableView hierarchy is generally a bad idea.
+Things get more complicated when dealing with UITableViewController/UICollectionViewController. The root view of these view controllers is a UIScrollView descendant and using it as a superview for TableViewIndex is generally a bad idea, since UIScrollView delays touch delivery by default.
 
-Enter TableViewIndexController. When used, it creates a TableViewIndex instance, adds it to the hierarchy as a sibling of UITableView and sets up the layout. The controller also observes UITableView insets and updates index view size accordingly. This makes sense when e.g. keyboard shows up.
+Enter TableViewIndexController. When used, it creates a TableViewIndex instance, adds it to the hierarchy as a sibling of the root view and sets up the layout. The controller also observes UIScrollView insets and updates index view size accordingly. This makes sense when e.g. keyboard shows up.
 
-You can also use the controller to hide TableViewIndex for cirtain table sections, like Apple does in its Music app:
+You can also use the controller to hide TableViewIndex for cirtain table sections, like Apple once did in its Music app:
 
 ![Screenshot4][autohide]
 
@@ -54,7 +57,7 @@ You can also use the controller to hide TableViewIndex for cirtain table section
 Using TableViewIndexController the setup can be done in just one line of code:
 
 ````swift
-let tableViewIndexController = TableViewIndexController(tableView: tableView)
+let tableViewIndexController = TableViewIndexController(scrollView: tableView)
 ````
 
  
@@ -85,9 +88,11 @@ Several predefined types of items are available for displaying strings, images, 
 To respond to index view touches and scroll table to the selected section, one should provide a delegate object and implement the following method:
 
 ````swift
-func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) {
+func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) -> Bool {
     let indexPath = NSIndexPath(forRow: 0, inSection: sectionIndex)
     tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Top, animated: false)
+    
+    return true // return true to produce haptic feedback on capable devices 
 }
 ````
 
@@ -102,7 +107,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ## Requirements
 
 * iOS 8.0+
-* Swift 3.0
+* Swift 3.1
 
 If you'd like to use the library in a project targeting Swift 2.x, use please use [swift-2.x](https://github.com/mindz-eye/MYTableViewIndex/tree/swift-2.x) branch.
 

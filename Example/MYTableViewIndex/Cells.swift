@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Cell : UITableViewCell {
+class TableCell : UITableViewCell {
     
     func setupWithItem(_ item: Item) {
         textLabel?.text = item as? String
@@ -17,5 +17,14 @@ class Cell : UITableViewCell {
     
     static func heightForItem(_ item: Item) -> CGFloat {
         return item is UIColor ? 100 : 44
+    }
+}
+
+class CollectionCell : UICollectionViewCell {
+    
+    @IBOutlet weak var textLabel: UILabel!
+
+    func setupWithItem(_ item: Item) {
+        textLabel?.text = item as? String
     }
 }

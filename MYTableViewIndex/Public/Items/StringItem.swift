@@ -26,8 +26,8 @@ open class StringItem : UILabel {
         return text == "#"
     }
     
-    open override func applyStyle(_ style: Style) {
-        font = style.font
+    open override func applyAttributes(_ attributes: IndexItemAttributes) {
+        font = attributes.font
     }
     
     open override func tintColorDidChange() {
@@ -55,6 +55,8 @@ open class StringItem : UILabel {
         }
     }
     
+    // MARK: - # Sign
+    
     /// Handle # sign in a special way to match native index appearance. It's not clear why
     /// Apple uses a bitmap instead of a font glyph for this character - most likely due to
     /// the blurry look of the symbol on non-retina devices. Obviously, this custom shape
@@ -70,9 +72,9 @@ open class StringItem : UILabel {
         
         let scale = UIScreen.main.scale;
         
-        // Why do I use image context instead of direct drawing into the layer? Fair question - I just
-        // didn't get how to draw the exact copy of Apple's `#` bitmap on 3x devices. This little hack -
-        // drawing at 2x and than upscaling the image - gives an acceptable result.
+        // Why use a separate image context for drawing? That's because I didn't get
+        // how to draw the exact copy of Apple's `#` bitmap on 3x devices. This little hack -
+        // drawing at 2x and then upscaling the image - gives an acceptable result.
         UIGraphicsBeginImageContextWithOptions(rect.size, false, min(scale, 2.0))
         
         let context = UIGraphicsGetCurrentContext()
@@ -80,20 +82,20 @@ open class StringItem : UILabel {
         context?.setStrokeColor(textColor.cgColor)
         
         // The constants below are carefully tuned to match the Apple's "pound sign" icon
-        let horMargin: CGFloat = roundToPixelBorder(1.5)
-        let verMargin: CGFloat = roundToPixelBorder(2.5)
+        let horMargin = CGFloat(1.5).pixelRounded()
+        let verMargin = CGFloat(2.5).pixelRounded()
         
-        let x1 = roundToPixelBorder(rect.x + horMargin)
-        let y1 = roundToPixelBorder(rect.y)
+        let x1 = (rect.x + horMargin).pixelRounded()
+        let y1 = (rect.y).pixelRounded()
         
-        let x2 = roundToPixelBorder(rect.x + rect.width - horMargin)
-        let y2 = roundToPixelBorder(rect.y + rect.height)
+        let x2 = (rect.x + rect.width - horMargin).pixelRounded()
+        let y2 = (rect.y + rect.height).pixelRounded()
         
-        let x3 = roundToPixelBorder(rect.x)
-        let y3 = roundToPixelBorder(rect.y + verMargin)
+        let x3 = (rect.x).pixelRounded()
+        let y3 = (rect.y + verMargin).pixelRounded()
         
-        let x4 = roundToPixelBorder(rect.x + rect.width)
-        let y4 = roundToPixelBorder(rect.y + rect.height - verMargin)
+        let x4 = (rect.x + rect.width).pixelRounded()
+        let y4 = (rect.y + rect.height - verMargin).pixelRounded()
         
         let lineWidth: CGFloat = 1.0 / scale * 2
         

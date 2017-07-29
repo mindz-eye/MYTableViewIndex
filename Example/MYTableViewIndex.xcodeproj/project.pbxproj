@@ -13,7 +13,8 @@
 		0F65EE011D0C8B45002F0E84 /* IndexDataSources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F65EDFC1D0C8B45002F0E84 /* IndexDataSources.swift */; };
 		0F65EE031D0C8C1D002F0E84 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0F65EE021D0C8C1D002F0E84 /* Assets.xcassets */; };
 		0F65EE051D0C8C63002F0E84 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0F65EE041D0C8C63002F0E84 /* Main.storyboard */; };
-		0FA2C1BB1D313FC200882C6E /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA2C1BA1D313FC200882C6E /* Cell.swift */; };
+		0F9FD75B1EFE83FF001D855C /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F9FD75A1EFE83FF001D855C /* CollectionViewController.swift */; };
+		0FA2C1BB1D313FC200882C6E /* Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA2C1BA1D313FC200882C6E /* Cells.swift */; };
 		0FA2C1BD1D313FCF00882C6E /* DataSources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA2C1BC1D313FCF00882C6E /* DataSources.swift */; };
 		0FA2C1BF1D31702D00882C6E /* Examples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA2C1BE1D31702D00882C6E /* Examples.swift */; };
 		0FA2C1C11D31806600882C6E /* ExamplesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA2C1C01D31806600882C6E /* ExamplesViewController.swift */; };
@@ -39,7 +40,8 @@
 		0F65EDFC1D0C8B45002F0E84 /* IndexDataSources.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexDataSources.swift; sourceTree = "<group>"; };
 		0F65EE021D0C8C1D002F0E84 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0F65EE041D0C8C63002F0E84 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		0FA2C1BA1D313FC200882C6E /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		0F9FD75A1EFE83FF001D855C /* CollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
+		0FA2C1BA1D313FC200882C6E /* Cells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cells.swift; sourceTree = "<group>"; };
 		0FA2C1BC1D313FCF00882C6E /* DataSources.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataSources.swift; sourceTree = "<group>"; };
 		0FA2C1BE1D31702D00882C6E /* Examples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Examples.swift; sourceTree = "<group>"; };
 		0FA2C1C01D31806600882C6E /* ExamplesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExamplesViewController.swift; sourceTree = "<group>"; };
@@ -116,11 +118,12 @@
 			children = (
 				0FA2C1C01D31806600882C6E /* ExamplesViewController.swift */,
 				0F65EDFA1D0C8B45002F0E84 /* TableViewController.swift */,
+				0F9FD75A1EFE83FF001D855C /* CollectionViewController.swift */,
 				0F65EDF91D0C8B45002F0E84 /* ViewController.swift */,
 				0FA2C1BE1D31702D00882C6E /* Examples.swift */,
 				0FA2C1BC1D313FCF00882C6E /* DataSources.swift */,
 				0F65EDFC1D0C8B45002F0E84 /* IndexDataSources.swift */,
-				0FA2C1BA1D313FC200882C6E /* Cell.swift */,
+				0FA2C1BA1D313FC200882C6E /* Cells.swift */,
 				0F65EDF81D0C8B45002F0E84 /* AppDelegate.swift */,
 				0F65EE041D0C8C63002F0E84 /* Main.storyboard */,
 				0F65EE021D0C8C1D002F0E84 /* Assets.xcassets */,
@@ -376,8 +379,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F9FD75B1EFE83FF001D855C /* CollectionViewController.swift in Sources */,
 				0F65EDFE1D0C8B45002F0E84 /* ViewController.swift in Sources */,
-				0FA2C1BB1D313FC200882C6E /* Cell.swift in Sources */,
+				0FA2C1BB1D313FC200882C6E /* Cells.swift in Sources */,
 				0F65EDFF1D0C8B45002F0E84 /* TableViewController.swift in Sources */,
 				0FA2C1BD1D313FCF00882C6E /* DataSources.swift in Sources */,
 				0F65EDFD1D0C8B45002F0E84 /* AppDelegate.swift in Sources */,

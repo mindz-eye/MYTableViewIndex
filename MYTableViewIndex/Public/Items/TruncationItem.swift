@@ -8,7 +8,7 @@
 
 import UIKit
 
-/// The item matches Apple's `•` symbols used as truncation indicators. Used it by default in table index.
+/// Default truncation symbol. Tries to match `•` symbol appearance used in UITableView.
 @objc (MYTruncationItem)
 open class TruncationItem : UIView {
     

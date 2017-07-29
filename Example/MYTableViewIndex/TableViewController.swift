@@ -8,17 +8,6 @@
 
 import UIKit
 import MYTableViewIndex
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
 
 class TableViewController : UITableViewController, UITextFieldDelegate, TableViewIndexDelegate, ExampleContainer {
     
@@ -35,7 +24,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
         
         dataSource = example.dataSource
         
-        tableViewIndexController = TableViewIndexController(tableView: tableView)
+        tableViewIndexController = TableViewIndexController(scrollView: tableView)
         tableViewIndexController.tableViewIndex.delegate = self
         
         example.setupTableIndexController(tableViewIndexController)
@@ -66,14 +55,14 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        if let dataCell = cell as? Cell {
+        if let dataCell = cell as? TableCell {
             dataCell.setupWithItem(dataSource.itemAtIndexPath(indexPath)!)
         }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Cell.heightForItem(dataSource.itemAtIndexPath(indexPath)!)
+        return TableCell.heightForItem(dataSource.itemAtIndexPath(indexPath)!)
     }
     
     override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
@@ -93,7 +82,9 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
     
     // MARK: - TableViewIndex
     
-    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) {
+    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) -> Bool {
+        let originalOffset = tableView.contentOffset
+        
         if item is SearchItem {
             tableView.scrollRectToVisible(searchController.searchBar.frame, animated: false)
         } else {
@@ -106,6 +97,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
                 tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             }
         }
+        return tableView.contentOffset != originalOffset
     }
     
     // MARK: - Helpers
@@ -147,7 +139,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
     }
     
     fileprivate func dummyItemForNativeTableIndex() -> String {
-        let maxLetterWidth = self.tableViewIndexController.tableViewIndex.font?.lineHeight
+        let maxLetterWidth = self.tableViewIndexController.tableViewIndex.font.lineHeight
         var str = "";
         var size = CGSize()
         while size.width < maxLetterWidth {
