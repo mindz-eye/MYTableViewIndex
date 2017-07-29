@@ -1,8 +1,6 @@
 # MYTableViewIndex
 
-<!---
-[![CI Status](http://img.shields.io/travis/Makarov Yuriy/MYTableViewIndex.svg?style=flat)](https://travis-ci.org/Makarov Yuriy/MYTableViewIndex)
- -->
+[![Build Status](https://travis-ci.org/mindz-eye/MYTableViewIndex.svg?branch=master)](https://travis-ci.org/mindz-eye/MYTableViewIndex)
 [![Version](https://img.shields.io/cocoapods/v/MYTableViewIndex.svg?style=flat)](http://cocoapods.org/pods/MYTableViewIndex)
 [![License](https://img.shields.io/cocoapods/l/MYTableViewIndex.svg?style=flat)](http://cocoapods.org/pods/MYTableViewIndex)
 [![Platform](https://img.shields.io/cocoapods/p/MYTableViewIndex.svg?style=flat)](http://cocoapods.org/pods/MYTableViewIndex)
