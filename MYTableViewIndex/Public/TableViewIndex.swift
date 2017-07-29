@@ -11,81 +11,77 @@ import UIKit
 @objc(MYTableViewIndex)
 open class TableViewIndex : UIControl {
     
+    // MARK: - Properties
+    
     /// Data source for the table index object. See TableViewIndexDataSource protocol for details.
     @IBOutlet public weak var dataSource: TableViewIndexDataSource? {
-        didSet {
-            reloadData()
-        }
+        didSet { reloadData() }
     }
     
     /// Delegate for the table index object. See TableViewIndexDelegate protocol for details.
     @IBOutlet public weak var delegate: TableViewIndexDelegate?
     
-    /// Background view is displayed below the index items and can be set to any UIView.
-    /// If not set or was set to nil, creates a default view which mimics a system index appearance.
-    public var backgroundView: UIView? {
+    /// Background view is displayed below the index items and can customized with any UIView.
+    /// If not set or set to nil, creates a default view which mimics the system index appearance.
+    public var backgroundView: UIView! {
         didSet {
             if let view = backgroundView {
                 insertSubview(view, at: 0)
             } else {
-                addDefaultBackgroundView()
+                backgroundView = BackgroundView()
             }
         }
     }
     
     /// Font for the index view items. If not set or set to nil, uses a default font which is chosen to
     /// match system appearance.
-    public var font: UIFont? {
-        didSet {
-            updateStyle()
-        }
+    public var font: UIFont! {
+        get { return style.font }
+        set { style = style.copy(applying: newValue) }
     }
     
     /// Vertical spacing between the items. Equals to 1 point by default to match system appearance.
-    public var itemSpacing: CGFloat? {
-        didSet {
-            updateStyle()
-        }
+    public var itemSpacing: CGFloat! {
+        get { return style.itemSpacing }
+        set { style = style.copy(applying: newValue) }
     }
     
     /// The distance that index items are inset from the enclosing background view. The property
-    /// doesn't change the position of index items. Instead, it changes size of the background view
-    /// to match the inset. In other words, the background view "wraps" the index content.
-    /// Set inset value to CGFloat.max to make background view fill all the available space on that side.
-    public var indexInset = UIEdgeInsets(top: CGFloat.greatestFiniteMagnitude, left: pixelScale(), bottom: CGFloat.greatestFiniteMagnitude, right: pixelScale()) {
-        didSet {
-            setNeedsLayout()
-        }
+    /// doesn't change the position of index items. Instead, it changes the size of the background view
+    /// to match the inset. In other words, the background view "wraps" the content. Affects intrinsic
+    /// content size.
+    /// Set inset value to CGFloat.max to make the background view fill all the available space.
+    /// Default value matches the system index appearance.
+    /// Left and right values are flipped when using right-to-left user interface direction.
+    public var indexInset: UIEdgeInsets! {
+        get { return style.indexInset }
+        set { style = style.copy(applying: newValue) }
     }
 
-    /// The distance that index items are shifted inside the enclosing background view. The property
-    /// changes the position of items and doesn't affect the size of the background view.
-    public var indexOffset = UIOffset(horizontal: 0.0, vertical: 1.0) {
-        didSet {
-            setNeedsLayout()
-        }
+    /// The distance from the left (or right in case of right-to-left languages) border of the background view
+    /// for which index items are shifted inside it.
+    /// The property only affects the position of the index items and doesn't change the size of the background view.
+    /// Default value matches the system index appearance.
+    public var indexOffset: UIOffset! {
+        get { return style.indexOffset }
+        set { style = style.copy(applying: newValue) }
     }
     
-    override open var intrinsicContentSize: CGSize {
-        let width = indexRect().width + indexInset.left + indexInset.right
-        let minWidth: CGFloat = 44.0
-        return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
-    }
-
-    /// The array of all items provided by data source.
+    /// The list of all items provided by the data source.
     public private(set) var items: [UIView] = []
     
-    /// The array of items currently displayed by table index.
+    /// Returns a set of items suitable for displaying within the current bounds. If there is not enough space
+    /// to display all the items provided by the data source, some of them are replaced with a special truncation item.
+    /// To customize the class of truncation item, use the corresponding TableViewIndexDataSource method.
     public var displayedItems: [UIView] {
-        return indexView.items
+        return indexView.items ?? []
     }
     
     private var truncation: Truncation<UIView>?
     
     private var style: Style! {
         didSet {
-            indexView.style = style
-            updateVisibleItems()
+            applyItemAttributes()
             setNeedsLayout()
         }
     }
@@ -94,7 +90,9 @@ open class TableViewIndex : UIControl {
         let view = IndexView()
         self.addSubview(view)
         return view
-        }()
+    }()
+    
+    // MARK: - Initialization
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -109,19 +107,11 @@ open class TableViewIndex : UIControl {
     private func commonInit() {
         backgroundColor = UIColor.clear
         
-        addDefaultBackgroundView()
-        updateStyle()
+        style = Style(userInterfaceDirection: UIView.my_userInterfaceLayoutDirection(for: self))
+        backgroundView = BackgroundView()
         
         isExclusiveTouch = true
         isMultipleTouchEnabled = false
-    }
-    
-    private func addDefaultBackgroundView() {
-        let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.9)
-        view.isUserInteractionEnabled = false
-        insertSubview(view, at: 0)
-        backgroundView = view
     }
     
     // MARK: - Updates
@@ -131,9 +121,7 @@ open class TableViewIndex : UIControl {
     public func reloadData() {
         items = queryItems()
         truncation = queryTruncation()
-        
-        applyStyle()
-        updateVisibleItems()
+        applyItemAttributes()
         setNeedsLayout()
     }
     
@@ -157,72 +145,58 @@ open class TableViewIndex : UIControl {
         })
     }
     
-    private func updateStyle() {
-        style = ConcreteStyle(font: font, itemSpacing: itemSpacing)
-        applyStyle()
-    }
-    
-    private func applyStyle() {
+    private func applyItemAttributes() {
         for item in items {
-            item.applyStyle(style)
+            item.applyAttributes(style)
         }
     }
-    
-    /// Calculates a set of items suitable for displaying in the current frame. If there is not enough space
-    /// to display all the provided items, some of the items are replaced with a special truncation item. To
-    /// customize the class of truncation item, use the corresponding TableViewIndexDataSource method.
-    private func updateVisibleItems() {
-        let availableSize = CGSize(width: bounds.width, height: bounds.height)
         
-        if let truncation = truncation {
-            indexView.items = truncation.truncate(forHeight: availableSize.height, style: style)
-        } else {
-            indexView.items = items
-        }
-    }
-    
     // MARK: - Layout
     
     /// Returns a drawing area for the index items.
-    open func indexRect() -> CGRect {
-        var frame = CGRect(origin: CGPoint(), size: indexView.sizeThatFits(bounds.size)).integral
-        frame.right = bounds.right - indexInset.right + indexOffset.horizontal
-        frame.centerY = bounds.centerY + indexOffset.vertical
-        return frame
+    public func indexRect() -> CGRect {
+        return indexView.frame
     }
     
     /// Returns a drawing area for the background view.
-    open func backgroundRect() -> CGRect {
-        let indexFrame = indexRect()
-        
-        let width = indexFrame.width + indexInset.left + indexInset.right
-        let height = min(indexFrame.height + indexInset.top + indexInset.bottom, bounds.height)
-        
-        var rect = CGRect(origin: CGPoint(x: bounds.width - width, y: 0),
-                          size: CGSize(width: width, height: height))
-        rect.centerY = indexFrame.centerY
-        
-        // Check if background view should fill all the available space
-        if indexInset.top == CGFloat.greatestFiniteMagnitude {
-            rect.top = 0.0
-        }
-        if indexInset.bottom == CGFloat.greatestFiniteMagnitude {
-            rect.bottom = bounds.bottom
-        }
-        return rect.integral
+    public func backgroundRect() -> CGRect {
+        return backgroundView.frame
     }
     
     open override func layoutSubviews() {
         super.layoutSubviews()
         
-        updateVisibleItems()
+        var visibleItems = items
         
-        indexView.frame = indexRect()
-        backgroundView?.frame = backgroundRect()
+        if let truncation = truncation {
+            visibleItems = truncation.truncate(forHeight: bounds.height, style: style)
+        }
+        let layout = Layout(items: visibleItems, style: style, bounds: bounds)
+        
+        indexView.frame = layout.contentFrame
+        backgroundView.frame = layout.backgroundFrame
+        
+        indexView.reload(with: visibleItems, layout: layout.itemLayout)
+    }
+    
+    override open var intrinsicContentSize: CGSize {
+        let layout = ItemLayout(items: items, style: style)
+        let width = layout.size.width + style.indexInset.left + style.indexInset.right
+        let minWidth: CGFloat = 44.0
+        return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
     }
     
     open override func sizeThatFits(_ size: CGSize) -> CGSize {
         return CGSize(width: intrinsicContentSize.width, height: size.height)
+    }
+    
+    @available(iOS 9.0, *)
+    open override var semanticContentAttribute: UISemanticContentAttribute {
+        get { return super.semanticContentAttribute }
+        set {
+            super.semanticContentAttribute = newValue
+            style = style.copy(applying: UIView.my_userInterfaceLayoutDirection(for: self))
+        }
     }
     
     // MARK: - Touches
@@ -232,8 +206,7 @@ open class TableViewIndex : UIControl {
     
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first , bounds.contains(touch.location(in: self)) {
-            currentTouch = touch
-            isHighlighted = true
+            beginTouch(touch)
             processTouch(touch)
         }
         super.touchesBegan(touches, with: event)
@@ -260,6 +233,12 @@ open class TableViewIndex : UIControl {
         super.touchesCancelled(touches, with: event)
     }
     
+    private func beginTouch(_ touch: UITouch) {
+        currentTouch = touch
+        isHighlighted = true
+        prepareFeedbackGenerator()
+    }
+    
     private func processTouch(_ touch: UITouch) {
         if items.isEmpty {
             return
@@ -272,11 +251,14 @@ open class TableViewIndex : UIControl {
             return
         }
         currentIndex = idx
-        
+
         if let delegate = self.delegate
             , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelect:at:))) {
             
-            delegate.tableViewIndex!(self, didSelect: items[idx], at: idx)
+            let shouldProduceFeedback = delegate.tableViewIndex!(self, didSelect: items[idx], at: idx)
+            if shouldProduceFeedback {
+                notifyFeedbackGenerator()
+            }
         }
     }
     
@@ -284,6 +266,37 @@ open class TableViewIndex : UIControl {
         currentTouch = nil
         currentIndex = nil
         isHighlighted = false
+        cleanupFeedbackGenerator()
+    }
+    
+    // MARK: - Haptic Feedback support
+    
+    @available(iOS 10.0, *)
+    private var feedbackGenerator: UISelectionFeedbackGenerator {
+        if feedbackGeneratorInstance == nil {
+            feedbackGeneratorInstance = UISelectionFeedbackGenerator()
+        }
+        return feedbackGeneratorInstance as! UISelectionFeedbackGenerator
+    }
+    private var feedbackGeneratorInstance: Any? = nil
+    
+    private func prepareFeedbackGenerator() {
+        if #available(iOS 10.0, *) {
+            feedbackGenerator.prepare()
+        }
+    }
+    
+    private func notifyFeedbackGenerator() {
+        if #available(iOS 10.0, *) {
+            feedbackGenerator.selectionChanged()
+            feedbackGenerator.prepare()
+        }
+    }
+    
+    private func cleanupFeedbackGenerator() {
+        if #available(iOS 10.0, *) {
+            feedbackGeneratorInstance = nil
+        }
     }
 }
 
@@ -292,26 +305,34 @@ open class TableViewIndex : UIControl {
 @objc(MYTableViewIndexDataSource)
 public protocol TableViewIndexDataSource : NSObjectProtocol {
     
-    /// Provides a set of items to display in the table index. Default set of views tuned for
-    /// displaying text, images, search indicator and truncation items are provided.
-    /// Can be any view basically, but please avoid passing UITableViews :)
-    /// See IndexItem protocol for item customization points.
+    /// Provides a set of items to display in the table index. The library provides
+    /// a default set of views tuned for displaying text, images, search indicator and
+    /// truncation items.
+    /// You can use any UIView subclass as an item basically, though using UITableView
+    /// is not recommended :)
+    /// Check IndexItem protocol for item customization points.
+    @objc(indexItemsForTableViewIndex:)
     func indexItems(for tableViewIndex: TableViewIndex) -> [UIView]
     
-    /// Provides a class for truncation items. Truncation items are used when there is not enough
-    /// space for displaying all the items provided by the data source. If this happens, table index
-    /// omits some of the items from being displayed and inserts truncation items instead.
-    /// By default table index uses TruncationItem class, tuned to match native index apperance.
-    @objc optional func truncationItemClass(for tableViewIndex: TableViewIndex) -> AnyClass
+    /// Provides a class for truncation items. Truncation items are useful when there's not enough
+    /// space for displaying all the items provided by the data source. When this happens, table
+    /// index omits some of the items from being displayed and inserts one or more truncation items
+    /// instead.
+    /// Table index uses TruncationItem class by default, which is tuned to match the native index
+    /// appearance.
+    @objc(truncationItemClassForTableViewIndex:)
+    optional func truncationItemClass(for tableViewIndex: TableViewIndex) -> AnyClass
 }
 
 
 @objc(MYTableViewIndexDelegate)
 public protocol TableViewIndexDelegate : NSObjectProtocol {
     
-    /// Called as a result of recognizing an index touch. Can be used to scroll table view to
-    /// the corresponding section.
-    @objc optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int)
+    /// Called as a result of recognizing an index touch. Can be used to scroll table/collection view to
+    /// a corresponding section.
+    /// Return true to produce a haptic feedback (iPhone 7 with iOS 10 or later).
+    @objc(tableViewIndex:didSelectItem:atIndex:)
+    optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) -> Bool
 }
 
 // MARK: - IB support

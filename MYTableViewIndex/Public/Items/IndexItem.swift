@@ -8,7 +8,7 @@
 
 import UIKit
 
-/// Protocol for customizing index items behavior. Implicitly confirmed by all UIView subclasses.
+/// Protocol for customizing index item behavior.
 @objc (MYIndexItem)
 public protocol IndexItem {
     
@@ -16,13 +16,20 @@ public protocol IndexItem {
     func sizeThatFits(_ size: CGSize) -> CGSize
     
     /// Indicates that the closest neighborhood of this item can not be truncated. The flag is only
-    /// checked if the receiver is the first or the last item in index sequence.
-    /// The method is used to mimic native index behavior. E.g, UITableView never truncates items
+    /// checked if the receiver is the first or the last item in the index sequence.
+    /// The method is used to mimic UITableView behavior. E.g, it never truncates items
     /// after search item and before # sign.
     func blocksEdgeTruncation() -> Bool
     
     /// Implement this method to apply style attributes of table index to the item.
-    func applyStyle(_ style: Style)
+    func applyAttributes(_ attributes: IndexItemAttributes)
+}
+
+/// Container for item appearance attributes.
+@objc (MYIndexItemAttributes)
+public protocol IndexItemAttributes {
+    
+    var font: UIFont { get }
 }
 
 extension UIView : IndexItem {
@@ -31,6 +38,6 @@ extension UIView : IndexItem {
         return false
     }
     
-    public func applyStyle(_ style: Style) {}
+    public func applyAttributes(_ attributes: IndexItemAttributes) {}
 }
 

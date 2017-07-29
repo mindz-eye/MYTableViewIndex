@@ -15,9 +15,9 @@ public class TableViewIndexController : NSObject {
     public let tableViewIndex = TableViewIndex()
     
     /// Set closure to tune layout of the table index.
-    public var layouter: ((_ tableView: UITableView, _ tableIndex: TableViewIndex) -> Void)?
+    public var layouter: ((_ scrollView: UIScrollView, _ tableIndex: TableViewIndex) -> Void)?
     
-    private(set) weak var tableView: UITableView?
+    private(set) weak var scrollView: UIScrollView?
     
     private enum ObservedKeyPaths: String {
         case contentInset
@@ -29,11 +29,11 @@ public class TableViewIndexController : NSObject {
     
     private var hidden = false
     
-    public init(tableView: UITableView) {
-        self.tableView = tableView
+    public init(scrollView: UIScrollView) {
+        self.scrollView = scrollView
         super.init()
         
-        observeTableView()
+        observeScrollView()
         observeKeyboard();
     }
     
@@ -43,19 +43,19 @@ public class TableViewIndexController : NSObject {
     
     // MARK: - UITableView observation
     
-    private func observeTableView() {
-        guard let tableView = tableView else {
+    private func observeScrollView() {
+        guard let scrollView = scrollView else {
             return
         }
         let keyPaths = [ObservedKeyPaths.bounds.rawValue,
                         ObservedKeyPaths.center.rawValue,
                         ObservedKeyPaths.contentInset.rawValue]
         
-        observer = KeyValueObserver(object: tableView, keyPaths: keyPaths, handler: {[weak self] keyPath in
+        observer = KeyValueObserver(object: scrollView, keyPaths: keyPaths, handler: {[weak self] keyPath in
             self?.layout()
         })
         
-        tableView.my_didMoveToSuperviewHandler = { [weak self] superview in
+        scrollView.my_didMoveToSuperviewHandler = { [weak self] superview in
             if let superview = superview, let tableIndex = self?.tableViewIndex {
                 superview.addSubview(tableIndex)
                 self?.layout()
@@ -74,7 +74,7 @@ public class TableViewIndexController : NSObject {
     }
     
     @objc private func handleKeyboardNotification(_ note: Notification) {
-        guard let tableView = tableView, let parentView = tableView.superview, let userInfo = note.userInfo else {
+        guard let scrollView = scrollView, let parentView = scrollView.superview, let userInfo = note.userInfo else {
             return;
         }
         
@@ -84,8 +84,8 @@ public class TableViewIndexController : NSObject {
             
             let convertedFrame = parentView.convert(frame, from: nil)
             
-            var inset = tableView.contentInset
-            inset.bottom = (tableView.frame.maxY - convertedFrame.minY)
+            var inset = scrollView.contentInset
+            inset.bottom = (scrollView.frame.maxY - convertedFrame.minY)
             
             UIView.animate(withDuration: duration, animations: {
                 UIView.setAnimationCurve(UIViewAnimationCurve(rawValue: curve)!)
@@ -102,37 +102,43 @@ public class TableViewIndexController : NSObject {
     // MARK: - Layout
     
     private func layout() {
-        guard let tableView = tableView else {
+        guard let scrollView = scrollView else {
             return
         }
-        layout(with: tableView.contentInset)
+        layout(with: scrollView.contentInset)
     }
     
     private func layout(with inset: UIEdgeInsets) {
-        guard let tableView = tableView else {
+        guard let scrollView = scrollView else {
             return
         }
         let tableFrame = tableViewIndex.superview != nil
-            ? tableView.convert(tableView.bounds, to: tableViewIndex.superview) : tableView.frame
+            ? scrollView.convert(scrollView.bounds, to: tableViewIndex.superview) : scrollView.frame
         
         let width = tableFrame.width - (inset.left + inset.right)
         let height = tableFrame.height - (inset.top + inset.bottom)
         
-        layout(in: CGRect(x: tableFrame.x, y: tableFrame.y + inset.top, width: width, height: height))
+        layout(in: CGRect(x: tableFrame.x + inset.left, y: tableFrame.y + inset.top, width: width, height: height))
     }
     
     private func layout(in rect: CGRect) {
         let tableIndexSize = tableViewIndex.sizeThatFits(rect.size)
         
-        var frame = CGRect(origin: CGPoint(x: rect.right - tableIndexSize.width, y: rect.y), size: tableIndexSize)
+        let isRightToLeft = UIView.my_userInterfaceLayoutDirection(for: tableViewIndex) == .rightToLeft
+        
+        let trailing = isRightToLeft ? rect.left : rect.right - tableIndexSize.width
+        
+        var frame = CGRect(origin: CGPoint(x: trailing, y: rect.y), size: tableIndexSize)
         
         if hidden {
-            frame.right = frame.right + tableViewIndex.backgroundRect().width
+            frame.right = isRightToLeft
+                ? frame.left - tableViewIndex.backgroundRect().width
+                : frame.right + tableViewIndex.backgroundRect().width
         }
         tableViewIndex.frame = frame
         
-        if let layouter = layouter, let tableView = tableView {
-            layouter(tableView, tableViewIndex)
+        if let layouter = layouter, let scrollView = scrollView {
+            layouter(scrollView, tableViewIndex)
         }
     }
     
@@ -154,7 +160,7 @@ public class TableViewIndexController : NSObject {
             self.tableViewIndex.isHidden = hidden
             
             if !hidden {
-                self.observeTableView()
+                self.observeScrollView()
             }
             if let completion = completion {
                 completion()
