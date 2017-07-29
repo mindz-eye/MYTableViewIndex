@@ -252,12 +252,13 @@ open class TableViewIndex : UIControl {
         }
         currentIndex = idx
 
-        notifyFeedbackGenerator()
-        
         if let delegate = self.delegate
             , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelect:at:))) {
             
-            delegate.tableViewIndex!(self, didSelect: items[idx], at: idx)
+            let shouldProduceFeedback = delegate.tableViewIndex!(self, didSelect: items[idx], at: idx)
+            if shouldProduceFeedback {
+                notifyFeedbackGenerator()
+            }
         }
     }
     
@@ -268,7 +269,7 @@ open class TableViewIndex : UIControl {
         cleanupFeedbackGenerator()
     }
     
-    // MARK: - Taptic Engine support
+    // MARK: - Haptic Feedback support
     
     @available(iOS 10.0, *)
     private var feedbackGenerator: UISelectionFeedbackGenerator {
@@ -329,8 +330,9 @@ public protocol TableViewIndexDelegate : NSObjectProtocol {
     
     /// Called as a result of recognizing an index touch. Can be used to scroll table/collection view to
     /// a corresponding section.
+    /// Return true to produce a haptic feedback (iPhone 7 with iOS 10 or later).
     @objc(tableViewIndex:didSelectItem:atIndex:)
-    optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int)
+    optional func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) -> Bool
 }
 
 // MARK: - IB support

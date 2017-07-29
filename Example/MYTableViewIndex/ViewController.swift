@@ -108,7 +108,9 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
         return items
     }
     
-    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) {
+    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) -> Bool {
+        let originalOffset = tableView.contentOffset
+        
         if item is SearchItem {
             tableView.scrollRectToVisible(searchController.searchBar.frame, animated: false)
         } else {
@@ -118,6 +120,7 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
             let indexPath = IndexPath(row: rowCount > 0 ? 0 : NSNotFound, section: sectionIndex)
             tableView.scrollToRow(at: indexPath, at: .top, animated: false)
         }
+        return tableView.contentOffset != originalOffset
     }
     
     // MARK: - Actions

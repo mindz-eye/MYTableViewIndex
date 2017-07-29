@@ -63,16 +63,18 @@ class CollectionViewController : UICollectionViewController, UICollectionViewDel
     
     // MARK: - TableViewIndex
     
-    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) {
+    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) -> Bool {
         let sectionIndex = example.mapIndexItemToSection(item, index: index)
         if sectionIndex == NSNotFound {
-            return
+            return false
         }
         let indexPath = IndexPath(row: 0, section: sectionIndex)
         guard let attrs = collectionView!.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: indexPath) else {
-            return
+            return false
         }
         let yOffset = min(attrs.frame.origin.y, collectionView!.contentSize.height - collectionView!.frame.height + collectionView!.contentInset.top)
         collectionView!.contentOffset = CGPoint(x: 0, y: yOffset - collectionView!.contentInset.top)
+        
+        return true
     }
 }

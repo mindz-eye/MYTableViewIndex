@@ -82,7 +82,9 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
     
     // MARK: - TableViewIndex
     
-    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) {
+    func tableViewIndex(_ tableViewIndex: TableViewIndex, didSelect item: UIView, at index: Int) -> Bool {
+        let originalOffset = tableView.contentOffset
+        
         if item is SearchItem {
             tableView.scrollRectToVisible(searchController.searchBar.frame, animated: false)
         } else {
@@ -95,6 +97,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
                 tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             }
         }
+        return tableView.contentOffset != originalOffset
     }
     
     // MARK: - Helpers
