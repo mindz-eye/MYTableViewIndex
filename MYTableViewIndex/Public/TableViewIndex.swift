@@ -33,15 +33,17 @@ open class TableViewIndex : UIControl {
         }
     }
     
-    /// Font for the index view items. If not set or set to nil, uses a default font which is chosen to
+    /// Font for the index view items. If not set, uses a default font which is chosen to
     /// match system appearance.
-    public var font: UIFont! {
+    /// Use resetFont to fall back to default font.
+    public var font: UIFont {
         get { return style.font }
         set { style = style.copy(applying: newValue) }
     }
     
     /// Vertical spacing between the items. Equals to 1 point by default to match system appearance.
-    public var itemSpacing: CGFloat! {
+    /// Use resetItemSpacing to fall back to default spacing.
+    public var itemSpacing: CGFloat {
         get { return style.itemSpacing }
         set { style = style.copy(applying: newValue) }
     }
@@ -52,8 +54,9 @@ open class TableViewIndex : UIControl {
     /// content size.
     /// Set inset value to CGFloat.max to make the background view fill all the available space.
     /// Default value matches the system index appearance.
+    /// Use resetIndexInset to fall back to default inset.
     /// Left and right values are flipped when using right-to-left user interface direction.
-    public var indexInset: UIEdgeInsets! {
+    public var indexInset: UIEdgeInsets {
         get { return style.indexInset }
         set { style = style.copy(applying: newValue) }
     }
@@ -62,7 +65,8 @@ open class TableViewIndex : UIControl {
     /// for which index items are shifted inside it.
     /// The property only affects the position of the index items and doesn't change the size of the background view.
     /// Default value matches the system index appearance.
-    public var indexOffset: UIOffset! {
+    /// Use resetIndexOffset to fall back to default offset.
+    public var indexOffset: UIOffset {
         get { return style.indexOffset }
         set { style = style.copy(applying: newValue) }
     }
@@ -197,6 +201,35 @@ open class TableViewIndex : UIControl {
             super.semanticContentAttribute = newValue
             style = style.copy(applying: UIView.my_userInterfaceLayoutDirection(for: self))
         }
+    }
+    
+    // MARK: - Style
+    
+    /// Resets font to default value to match the system index appearance.
+    public func resetFont() {
+        style = Style(userInterfaceDirection: style.userInterfaceDirection, itemSpacing: style.itemSpacing, indexInset: style.indexInset, indexOffset: style.indexOffset)
+    }
+    
+    /// Resets itemSpacing to default value to match the system index appearance.
+    public func resetItemSpacing() {
+        style = Style(userInterfaceDirection: style.userInterfaceDirection, font: style.font, indexInset: style.indexInset, indexOffset: style.indexOffset)
+    }
+    
+    /// Resets indexInset to default value to match the system index appearance.
+    public func resetIndexInset() {
+        style = Style(userInterfaceDirection: style.userInterfaceDirection, font: style.font, itemSpacing: style.itemSpacing, indexOffset: style.indexOffset)
+    }
+    
+    /// Resets indexOffset to default value to match the system index appearance.
+    public func resetIndexOffset() {
+        style = Style(userInterfaceDirection: style.userInterfaceDirection, font: style.font, itemSpacing: style.itemSpacing, indexInset: style.indexInset)
+    }
+    
+    /// Convenience method to reset basic styling to match the system index appearance.
+    /// This includes background, font, itemSpacing, indexInset and indexOffset.
+    public func resetAppearance() {
+        style = Style(userInterfaceDirection: style.userInterfaceDirection)
+        backgroundView = nil
     }
     
     // MARK: - Touches
