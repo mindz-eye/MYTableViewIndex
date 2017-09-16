@@ -136,7 +136,7 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
     
     // MARK: - Keyboard
     
-    func handleKeyboardNotification(_ note: Notification) {
+    @objc func handleKeyboardNotification(_ note: Notification) {
         slider.value = 1.0
         
         guard let userInfo = note.userInfo else {

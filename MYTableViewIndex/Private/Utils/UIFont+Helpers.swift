@@ -8,7 +8,7 @@
 
 import UIKit
 
-public func ==(lhs: [String : Any], rhs: [String : Any]) -> Bool {
+public func ==(lhs: [UIFontDescriptor.AttributeName : Any], rhs: [UIFontDescriptor.AttributeName : Any]) -> Bool {
     return NSDictionary(dictionary: lhs).isEqual(to: rhs)
 }
 

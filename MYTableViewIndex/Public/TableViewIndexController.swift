@@ -147,7 +147,7 @@ public class TableViewIndexController : NSObject {
     /// Hides or shows the table index. Completion closure is called instantly if animated flag is false.
     /// Use alongsideAnimations closure to run additional animations in the same context as the hide/show
     /// animation.
-    public func setHidden(_ hidden: Bool, animated: Bool, completion: ((Void) -> ())?, alongsideAnimations: ((Void) -> ())?) {
+    public func setHidden(_ hidden: Bool, animated: Bool, completion: (() -> ())?, alongsideAnimations: (() -> ())?) {
         if self.hidden == hidden {
             return
         }
@@ -177,7 +177,7 @@ public class TableViewIndexController : NSObject {
         setHidden(hidden, animated: animated, completion: nil, alongsideAnimations: nil)
     }
     
-    private func animateToHidden(_ hidden: Bool, completion: @escaping (Void) -> (), alongsideAnimations: ((Void) -> ())?) {
+    private func animateToHidden(_ hidden: Bool, completion: @escaping () -> (), alongsideAnimations: (() -> ())?) {
         if !hidden {
             tableViewIndex.isHidden = false
         }        

@@ -27,7 +27,7 @@ extension UIView {
         }
     }
     
-    func my_didMoveToSuperview() {
+    @objc func my_didMoveToSuperview() {
         my_didMoveToSuperview()
         
         if let handler = my_didMoveToSuperviewHandler {
