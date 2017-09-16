@@ -10,6 +10,7 @@ import UIKit
 
 /// Use this class for displaying text based items.
 @objc (MYStringItem)
+@objcMembers
 open class StringItem : UILabel {
     
     public init(text: String) {

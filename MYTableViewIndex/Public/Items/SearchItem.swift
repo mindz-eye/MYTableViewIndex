@@ -10,6 +10,7 @@ import UIKit
 
 /// Use this class to get a magnifying glass icon similar to UITableViewIndexSearch.
 @objc (MYSearchItem)
+@objcMembers
 open class SearchItem : UIView {
     
     override public init(frame: CGRect) {

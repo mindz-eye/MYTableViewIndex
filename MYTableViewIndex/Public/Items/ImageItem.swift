@@ -10,6 +10,7 @@ import UIKit
 
 /// Use this class for displaying image based items.
 @objc (MYImageItem)
+@objcMembers
 open class ImageItem : UIImageView {
     
     public var contentInset = UIEdgeInsets()

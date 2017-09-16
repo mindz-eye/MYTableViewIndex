@@ -10,6 +10,7 @@ import UIKit
 
 /// Default truncation symbol. Tries to match `•` symbol appearance used in UITableView.
 @objc (MYTruncationItem)
+@objcMembers
 open class TruncationItem : UIView {
     
     override public init(frame: CGRect) {
