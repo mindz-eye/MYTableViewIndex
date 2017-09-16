@@ -9,6 +9,7 @@
 import UIKit
 
 @objc(MYTableViewIndexController)
+@objcMembers
 public class TableViewIndexController : NSObject {
     
     /// Table index managed by controller.

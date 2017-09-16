@@ -9,6 +9,7 @@
 import UIKit
 
 @objc(MYTableViewIndex)
+@objcMembers
 open class TableViewIndex : UIControl {
     
     // MARK: - Properties
