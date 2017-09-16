@@ -177,7 +177,7 @@ public class TableViewIndexController : NSObject {
         setHidden(hidden, animated: animated, completion: nil, alongsideAnimations: nil)
     }
     
-    private func animateToHidden(_ hidden: Bool, completion: @escaping (Void) -> (), alongsideAnimations: ((Void) -> ())?) {
+    private func animateToHidden(_ hidden: Bool, completion: @escaping () -> (), alongsideAnimations: (() -> ())?) {
         if !hidden {
             tableViewIndex.isHidden = false
         }        
