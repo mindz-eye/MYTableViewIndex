@@ -22,7 +22,7 @@ open class TableViewIndex : UIControl {
     /// Delegate for the table index object. See TableViewIndexDelegate protocol for details.
     @IBOutlet public weak var delegate: TableViewIndexDelegate?
     
-    /// Background view is displayed below the index items and can customized with any UIView.
+    /// Background view is displayed below the index items and can be customized with any UIView.
     /// If not set or set to nil, creates a default view which mimics the system index appearance.
     public var backgroundView: UIView! {
         didSet {
