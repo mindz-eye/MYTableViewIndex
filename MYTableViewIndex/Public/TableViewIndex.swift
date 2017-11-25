@@ -117,6 +117,11 @@ open class TableViewIndex : UIControl {
         
         isExclusiveTouch = true
         isMultipleTouchEnabled = false
+        isAccessibilityElement = true
+        accessibilityTraits = UIAccessibilityTraitAdjustable
+        accessibilityLabel = NSLocalizedString("Table index", comment: "Accessibility title for the section index control")
+        
+        updateAccessibilityValue()
     }
     
     // MARK: - Updates
@@ -154,6 +159,41 @@ open class TableViewIndex : UIControl {
         for item in items {
             item.applyAttributes(style)
         }
+    }
+    
+    private func selectIndex(_ index: Int) {
+        guard index != currentIndex else { return }
+        
+        currentIndex = index
+        
+        updateAccessibilityValue()
+        
+        if let delegate = self.delegate
+            , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelect:at:))) {
+            
+            let shouldProduceFeedback = delegate.tableViewIndex!(self, didSelect: items[index], at: index)
+            if shouldProduceFeedback {
+                notifyFeedbackGenerator()
+            }
+        }
+    }
+    
+    private func updateAccessibilityValue() {
+        guard currentIndex >= 0 && currentIndex < items.count else { return }
+        
+        let currentItem = items[currentIndex]
+        
+        let titleText: String
+        if let labelText = currentItem.accessibilityLabel {
+            titleText = labelText
+        } else if let labelText = (currentItem as? UILabel)?.text {
+            titleText = labelText
+        } else {
+            titleText = String.localizedStringWithFormat(NSLocalizedString("Section %d", comment: "Accessibility title for a numbered section"), currentIndex + 1)
+        }
+        
+        let selectedText = NSLocalizedString("Selected", comment: "Accessibility title for the selected state")
+        accessibilityValue = "\(titleText), \(selectedText)"
     }
         
     // MARK: - Layout
@@ -236,7 +276,7 @@ open class TableViewIndex : UIControl {
     // MARK: - Touches
     
     private var currentTouch: UITouch?
-    private var currentIndex: Int?
+    private var currentIndex: Int = 0
     
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first , bounds.contains(touch.location(in: self)) {
@@ -284,21 +324,12 @@ open class TableViewIndex : UIControl {
         if idx == currentIndex {
             return
         }
-        currentIndex = idx
-
-        if let delegate = self.delegate
-            , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelect:at:))) {
-            
-            let shouldProduceFeedback = delegate.tableViewIndex!(self, didSelect: items[idx], at: idx)
-            if shouldProduceFeedback {
-                notifyFeedbackGenerator()
-            }
-        }
+        
+        selectIndex(idx)
     }
     
     private func finalizeTouch() {
         currentTouch = nil
-        currentIndex = nil
         isHighlighted = false
         cleanupFeedbackGenerator()
     }
@@ -330,6 +361,22 @@ open class TableViewIndex : UIControl {
     private func cleanupFeedbackGenerator() {
         if #available(iOS 10.0, *) {
             feedbackGeneratorInstance = nil
+        }
+    }
+    
+    // MARK: - Accessibility support
+    
+    open override func accessibilityIncrement() {
+        let newIndex = currentIndex - 1
+        if newIndex >= 0 {
+            selectIndex(newIndex)
+        }
+    }
+    
+    open override func accessibilityDecrement() {
+        let newIndex = currentIndex + 1
+        if newIndex < items.count {
+            selectIndex(newIndex)
         }
     }
 }
