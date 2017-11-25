@@ -179,21 +179,21 @@ open class TableViewIndex : UIControl {
     }
     
     private func updateAccessibilityValue() {
-        if items.count >= currentIndex && currentIndex < items.count  {
-            let currentItem = items[currentIndex]
-            
-            let titleText: String
-            if let labelText = currentItem.accessibilityLabel {
-                titleText = labelText
-            } else if let labelText = (currentItem as? UILabel)?.text {
-                titleText = labelText
-            } else {
-                titleText = String.localizedStringWithFormat(NSLocalizedString("Section %d", comment: "Accessibility title for a numbered section"), currentIndex + 1)
-            }
-            
-            let selectedText = NSLocalizedString("Selected", comment: "Accessibility title for the selected state")
-            accessibilityValue = "\(titleText), \(selectedText)"
+        guard currentIndex >= 0 && currentIndex < items.count else { return }
+        
+        let currentItem = items[currentIndex]
+        
+        let titleText: String
+        if let labelText = currentItem.accessibilityLabel {
+            titleText = labelText
+        } else if let labelText = (currentItem as? UILabel)?.text {
+            titleText = labelText
+        } else {
+            titleText = String.localizedStringWithFormat(NSLocalizedString("Section %d", comment: "Accessibility title for a numbered section"), currentIndex + 1)
         }
+        
+        let selectedText = NSLocalizedString("Selected", comment: "Accessibility title for the selected state")
+        accessibilityValue = "\(titleText), \(selectedText)"
     }
         
     // MARK: - Layout
