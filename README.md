@@ -16,6 +16,7 @@ MYTableViewIndex is a re-implementation of UITableView section index. This contr
 * Automatic layout, inset management and keyboard avoidance (via TableViewIndexController)
 * Right-to-left languages support
 * Haptic Feedback support
+* Accessibility support
 
 Below are the screenshots for some of the features:
 <br>
