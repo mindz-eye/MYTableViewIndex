@@ -93,8 +93,13 @@ public class TableViewIndexController : NSObject {
             
             let convertedFrame = parentView.convert(frame, from: nil)
             
+            var safeAreaInsets = UIEdgeInsets()
+            if #available(iOS 11.0, *) {
+                safeAreaInsets = parentView.safeAreaInsets
+            }
+            
             var inset = scrollView.my_effectiveContentInset
-            inset.bottom = (scrollView.frame.maxY - convertedFrame.minY)
+            inset.bottom = max(scrollView.frame.maxY - convertedFrame.minY, safeAreaInsets.bottom)
             
             UIView.animate(withDuration: duration, animations: {
                 UIView.setAnimationCurve(UIViewAnimationCurve(rawValue: curve)!)
