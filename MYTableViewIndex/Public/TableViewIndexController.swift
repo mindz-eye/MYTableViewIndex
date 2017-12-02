@@ -22,6 +22,7 @@ public class TableViewIndexController : NSObject {
     
     private enum ObservedKeyPaths: String {
         case contentInset
+        case adjustedContentInset
         case bounds
         case center
     }
@@ -48,9 +49,16 @@ public class TableViewIndexController : NSObject {
         guard let scrollView = scrollView else {
             return
         }
+        var insetKeypath: String
+        if #available(iOS 11.0, *) {
+            insetKeypath = ObservedKeyPaths.adjustedContentInset.rawValue
+        } else {
+            insetKeypath = ObservedKeyPaths.contentInset.rawValue
+        }
+        
         let keyPaths = [ObservedKeyPaths.bounds.rawValue,
                         ObservedKeyPaths.center.rawValue,
-                        ObservedKeyPaths.contentInset.rawValue]
+                        insetKeypath]
         
         observer = KeyValueObserver(object: scrollView, keyPaths: keyPaths, handler: {[weak self] keyPath in
             self?.layout()
@@ -85,7 +93,7 @@ public class TableViewIndexController : NSObject {
             
             let convertedFrame = parentView.convert(frame, from: nil)
             
-            var inset = scrollView.contentInset
+            var inset = scrollView.my_effectiveContentInset
             inset.bottom = (scrollView.frame.maxY - convertedFrame.minY)
             
             UIView.animate(withDuration: duration, animations: {
@@ -106,7 +114,7 @@ public class TableViewIndexController : NSObject {
         guard let scrollView = scrollView else {
             return
         }
-        layout(with: scrollView.contentInset)
+        layout(with: scrollView.my_effectiveContentInset)
     }
     
     private func layout(with inset: UIEdgeInsets) {

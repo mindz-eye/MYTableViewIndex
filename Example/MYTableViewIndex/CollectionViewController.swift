@@ -68,12 +68,21 @@ class CollectionViewController : UICollectionViewController, UICollectionViewDel
         if sectionIndex == NSNotFound {
             return false
         }
+        guard let collectionView = collectionView else {
+            return false;
+        }
         let indexPath = IndexPath(row: 0, section: sectionIndex)
-        guard let attrs = collectionView!.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: indexPath) else {
+        guard let attrs = collectionView.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: indexPath) else {
             return false
         }
-        let yOffset = min(attrs.frame.origin.y, collectionView!.contentSize.height - collectionView!.frame.height + collectionView!.contentInset.top)
-        collectionView!.contentOffset = CGPoint(x: 0, y: yOffset - collectionView!.contentInset.top)
+        var contentInset: UIEdgeInsets
+        if #available(iOS 11.0, *) {
+            contentInset = collectionView.adjustedContentInset
+        } else {
+            contentInset = collectionView.contentInset
+        }
+        let yOffset = min(attrs.frame.origin.y, collectionView.contentSize.height - collectionView.frame.height + contentInset.top)
+        collectionView.contentOffset = CGPoint(x: 0, y: yOffset - contentInset.top)
         
         return true
     }
