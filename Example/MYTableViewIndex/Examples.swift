@@ -150,7 +150,7 @@ class LargeFontExample : SearchExample {
     override func setupTableIndexController(_ tableIndexController: TableViewIndexController) {
         super.setupTableIndexController(tableIndexController)
         
-        tableIndexController.tableViewIndex.font = UIFont.boldSystemFont(ofSize: 20.0)
+        tableIndexController.tableViewIndex.font = UIFont.boldSystemFont(ofSize: 15.0)
     }
 }
 
