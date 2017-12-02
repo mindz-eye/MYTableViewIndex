@@ -16,6 +16,7 @@ open class SearchItem : UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.clear
+        accessibilityLabel = NSLocalizedString("Search", comment: "Accessibility title for search icon")
     }
     
     required public init?(coder aDecoder: NSCoder) {

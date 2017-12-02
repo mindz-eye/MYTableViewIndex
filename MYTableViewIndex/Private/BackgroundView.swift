@@ -21,7 +21,9 @@ class BackgroundView : UIView {
     }
     
     private func commonInit() {
-        backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        if #available(iOS 11.0, *) {} else {
+            backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        }
         isUserInteractionEnabled = false
     }
 }
