@@ -48,15 +48,12 @@ class IndexView : UIView {
     }
     
     private func removeItem(_ item: UIView) {
-        guard let items = items else {
-            return
-        }
         // A little trickery to make item removal look nice when performed inside an animation block
         // (e.g. when the keyboard shows up)
         CATransaction.setCompletionBlock {
             item.alpha = 1
             
-            if (!items.contains(item)) {
+            if let items = self.items, !items.contains(item) {
                 item.removeFromSuperview()
             }
         }
