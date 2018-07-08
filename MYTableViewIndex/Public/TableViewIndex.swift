@@ -120,8 +120,6 @@ open class TableViewIndex : UIControl {
         isAccessibilityElement = true
         accessibilityTraits = UIAccessibilityTraitAdjustable
         accessibilityLabel = NSLocalizedString("Table index", comment: "Accessibility title for the section index control")
-        
-        updateAccessibilityValue()
     }
     
     // MARK: - Updates
@@ -166,8 +164,6 @@ open class TableViewIndex : UIControl {
         
         currentIndex = index
         
-        updateAccessibilityValue()
-        
         if let delegate = self.delegate
             , delegate.responds(to: #selector(TableViewIndexDelegate.tableViewIndex(_:didSelect:at:))) {
             
@@ -176,12 +172,8 @@ open class TableViewIndex : UIControl {
                 notifyFeedbackGenerator()
             }
         }
-    }
-    
-    private func updateAccessibilityValue() {
-        guard currentIndex >= 0 && currentIndex < items.count else { return }
         
-        let currentItem = items[currentIndex]
+        let currentItem = items[index]
         
         let titleText: String
         if let labelText = currentItem.accessibilityLabel {
@@ -193,7 +185,7 @@ open class TableViewIndex : UIControl {
         }
         
         let selectedText = NSLocalizedString("Selected", comment: "Accessibility title for the selected state")
-        accessibilityValue = "\(titleText), \(selectedText)"
+        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, "\(titleText), \(selectedText)")
     }
         
     // MARK: - Layout
