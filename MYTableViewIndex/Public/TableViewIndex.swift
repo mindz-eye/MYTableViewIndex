@@ -41,6 +41,13 @@ open class TableViewIndex : UIControl {
         get { return style.font }
         set { style = style.copy(applying: newValue) }
     }
+
+    /// Minimum width of the view. Equals to 44 points by default to enable easy tapping
+    /// Use resetMinWidth to fall back to default spacing.
+    public var minWidth: CGFloat {
+        get { return style.minWidth }
+        set { style = style.copy(applyingMinWidth: minWidth) }
+    }
     
     /// Vertical spacing between the items. Equals to 1 point by default to match system appearance.
     /// Use resetItemSpacing to fall back to default spacing.
@@ -83,6 +90,10 @@ open class TableViewIndex : UIControl {
     }
     
     private var truncation: Truncation<UIView>?
+    
+    func setStyle(_ style:Style) {
+        self.style = style
+    }
     
     private var style: Style! {
         didSet {
@@ -219,7 +230,7 @@ open class TableViewIndex : UIControl {
     override open var intrinsicContentSize: CGSize {
         let layout = ItemLayout(items: items, style: style)
         let width = layout.size.width + style.indexInset.left + style.indexInset.right
-        let minWidth: CGFloat = 44.0
+        let minWidth: CGFloat = CGFloat(self.minWidth)
         return CGSize(width: max(width, minWidth), height: UIViewNoIntrinsicMetric)
     }
     

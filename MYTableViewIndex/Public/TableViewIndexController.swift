@@ -31,8 +31,10 @@ public class TableViewIndexController : NSObject {
     
     private var hidden = false
     
-    public init(scrollView: UIScrollView) {
+    public init(scrollView: UIScrollView, font: UIFont? = nil, itemSpacing: CGFloat? = nil, indexInset: UIEdgeInsets? = nil, indexOffset: UIOffset? = nil, minWidth: CGFloat? = nil) {
         self.scrollView = scrollView
+        let style = Style(userInterfaceDirection:UIView.my_userInterfaceLayoutDirection(for: scrollView), font:font, itemSpacing:itemSpacing,indexInset:indexInset, indexOffset: indexOffset, minWidth: minWidth)
+        tableViewIndex.setStyle(style)
         super.init()
         
         observeScrollView()

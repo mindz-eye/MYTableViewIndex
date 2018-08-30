@@ -15,37 +15,44 @@ class Style : IndexItemAttributes {
     let itemSpacing: CGFloat
     let indexInset: UIEdgeInsets
     let indexOffset: UIOffset
+    let minWidth: CGFloat
     
     init(userInterfaceDirection: UIUserInterfaceLayoutDirection,
-         font: UIFont = StyleDefaults.font,
-         itemSpacing: CGFloat = StyleDefaults.itemSpacing,
-         indexInset: UIEdgeInsets = StyleDefaults.indexInset,
-         indexOffset: UIOffset = StyleDefaults.indexOffset) {
+         font: UIFont? = nil,
+         itemSpacing: CGFloat? = nil,
+         indexInset: UIEdgeInsets? = nil,
+         indexOffset: UIOffset? = nil,
+         minWidth: CGFloat? = nil) {
         self.userInterfaceDirection = userInterfaceDirection
-        self.font = font
-        self.itemSpacing = itemSpacing
-        self.indexInset = indexInset
-        self.indexOffset = indexOffset
+        self.font = font ?? StyleDefaults.font
+        self.itemSpacing = itemSpacing ?? StyleDefaults.itemSpacing
+        self.indexInset = indexInset ?? StyleDefaults.indexInset
+        self.indexOffset = indexOffset ?? StyleDefaults.indexOffset
+        self.minWidth = minWidth ?? StyleDefaults.minWidth
     }
     
     func copy(applying userInterfaceDirection: UIUserInterfaceLayoutDirection) -> Style {
-        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset, minWidth: minWidth)
     }
     
     func copy(applying font: UIFont) -> Style {
-        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset, minWidth: minWidth)
     }
     
     func copy(applying itemSpacing: CGFloat) -> Style {
-        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset, minWidth: minWidth)
     }
 
     func copy(applying indexInset: UIEdgeInsets) -> Style {
-        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset, minWidth: minWidth)
     }
 
     func copy(applying indexOffset: UIOffset) -> Style {
-        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset)
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset, minWidth: minWidth)
+    }
+
+    func copy(applyingMinWidth minWidth: CGFloat) -> Style {
+        return Style(userInterfaceDirection: userInterfaceDirection, font: font, itemSpacing: itemSpacing, indexInset: indexInset, indexOffset: indexOffset, minWidth: minWidth)
     }
 }
 
@@ -60,4 +67,5 @@ struct StyleDefaults {
                                          bottom: CGFloat.greatestFiniteMagnitude, right: 1.0)
     
     static let indexOffset = UIOffset()
+    static let minWidth: CGFloat = 44.0
 }
