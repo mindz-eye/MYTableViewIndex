@@ -79,9 +79,9 @@ public class TableViewIndexController : NSObject {
     // MARK: - Keyboard
     
     private func observeKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TableViewIndexController.handleKeyboardNotification(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     @objc private func handleKeyboardNotification(_ note: Notification) {
@@ -89,9 +89,9 @@ public class TableViewIndexController : NSObject {
             return;
         }
         
-        if let frame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-           let curve = (userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber)?.intValue,
-           let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue {
+        if let frame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let curve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber)?.intValue,
+            let duration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue {
             
             let convertedFrame = parentView.convert(frame, from: nil)
             
@@ -104,7 +104,7 @@ public class TableViewIndexController : NSObject {
             inset.bottom = max(scrollView.frame.maxY - convertedFrame.minY, safeAreaInsets.bottom)
             
             UIView.animate(withDuration: duration, animations: {
-                UIView.setAnimationCurve(UIViewAnimationCurve(rawValue: curve)!)
+                UIView.setAnimationCurve(UIView.AnimationCurve(rawValue: curve)!)
 
                 self.layout(with: inset)
                 parentView.layoutIfNeeded()
