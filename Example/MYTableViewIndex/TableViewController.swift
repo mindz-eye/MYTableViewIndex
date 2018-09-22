@@ -146,7 +146,7 @@ class TableViewController : UITableViewController, UITextFieldDelegate, TableVie
             str += "i"
             size = str.boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
                                             options: [.usesFontLeading, .usesLineFragmentOrigin],
-                                            attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 11.0)],
+                                            attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 11.0)],
                                             context: nil).size
         }
         return str

@@ -72,7 +72,7 @@ class CollectionViewController : UICollectionViewController, UICollectionViewDel
             return false;
         }
         let indexPath = IndexPath(row: 0, section: sectionIndex)
-        guard let attrs = collectionView.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: indexPath) else {
+        guard let attrs = collectionView.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: indexPath) else {
             return false
         }
         var contentInset: UIEdgeInsets

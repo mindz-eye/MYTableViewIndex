@@ -49,9 +49,9 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
         
         setNativeIndexHidden(true)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handleKeyboardNotification(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handleKeyboardNotification(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handleKeyboardNotification(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.handleKeyboardNotification(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     deinit {
@@ -79,7 +79,7 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
     }
     
     func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
-        if title == UITableViewIndexSearch {
+        if title == UITableView.indexSearch {
             tableView.scrollRectToVisible(searchController.searchBar.frame, animated: false)
             return NSNotFound
         } else {
@@ -91,7 +91,7 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         var titles = UILocalizedIndexedCollation.current().sectionIndexTitles
         if hasSearchIndex {
-            titles.insert(UITableViewIndexSearch, at: 0)
+            titles.insert(UITableView.indexSearch, at: 0)
         }
         return titles
     }
@@ -143,15 +143,15 @@ class ViewController: UIViewController, UITableViewDataSource, TableViewIndexDat
             return
         }
         
-        if let frame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
-            let curve = (userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber)?.intValue,
-            let duration = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue {
+        if let frame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+            let curve = (userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber)?.intValue,
+            let duration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue {
             
             let convertedFrame = view.convert(frame, from: nil)
             self.bottomConstraint.constant += (tableView.frame.maxY - convertedFrame.minY)
             
             UIView.animate(withDuration: duration, animations: {
-                UIView.setAnimationCurve(UIViewAnimationCurve(rawValue: curve)!)
+                UIView.setAnimationCurve(UIView.AnimationCurve(rawValue: curve)!)
                 self.view.layoutIfNeeded()
             })
         }
