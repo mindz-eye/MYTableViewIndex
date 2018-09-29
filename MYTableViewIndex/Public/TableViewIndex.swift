@@ -421,6 +421,8 @@ public protocol TableViewIndexDelegate : NSObjectProtocol {
 
 // MARK: - IB support
 
+private var strongDataSourceKey = 0
+
 @IBDesignable
 extension TableViewIndex {
     
@@ -434,6 +436,8 @@ extension TableViewIndex {
     }
     
     open override func prepareForInterfaceBuilder() {
-        dataSource = TableDataSource()
+        let strongDataSource = TableDataSource()
+        setAssociatedObject(self, key: &strongDataSourceKey, value: strongDataSource, policy: .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        dataSource = strongDataSource
     }
 }
