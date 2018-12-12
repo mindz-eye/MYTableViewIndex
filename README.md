@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/cocoapods/l/MYTableViewIndex.svg?style=flat)](http://cocoapods.org/pods/MYTableViewIndex)
 [![Platform](https://img.shields.io/cocoapods/p/MYTableViewIndex.svg?style=flat)](http://cocoapods.org/pods/MYTableViewIndex)
 
-MYTableViewIndex is a re-implementation of UITableView section index. This control is usually seen in apps displaying contacts, tracks and other alphabetically sorted data. MYTableViewIndex completely replicates native iOS section index, but can also display images and has additional customization capabilities.
+MYTableViewIndex is a re-implementation of UITableView section index. This control is usually seen in apps displaying contacts, tracks, and other alphabetically sorted data. MYTableViewIndex completely replicates native iOS section index, but can also display images and has additional customization capabilities.
 
 ## Features
 
@@ -46,9 +46,9 @@ Note that in this case no layout is done automatically and all the required inde
 
 Things get more complicated when dealing with UITableViewController/UICollectionViewController. The root view of these view controllers is a UIScrollView descendant and using it as a superview for TableViewIndex is generally a bad idea, since UIScrollView delays touch delivery by default.
 
-Enter TableViewIndexController. When used, it creates a TableViewIndex instance, adds it to the hierarchy as a sibling of the root view and sets up the layout. The controller also observes UIScrollView insets and updates index view size accordingly. This makes sense when e.g. keyboard shows up.
+Enter TableViewIndexController. When used, it creates a TableViewIndex instance, adds it to the hierarchy as a sibling of the root view and sets up the layout. The controller also observes UIScrollView insets and updates index view size accordingly. This makes sense when the keyboard shows up, for example.
 
-You can also use the controller to hide TableViewIndex for cirtain table sections, like Apple once did in its Music app:
+You can also use the controller to hide TableViewIndex for certain table sections like Apple once did in its Music app:
 
 ![Screenshot4][autohide]
 
@@ -80,7 +80,7 @@ tableViewIndexController.tableViewIndex.dataSource = dataSourceObject
 ````
 
 
-Several predefined types of items are available for displaying strings, images, magnifying glass and truncation symbols. You can provide your own type of item though.
+Several predefined types of items are available for displaying strings, images, magnifying glass, and truncation symbols. You can provide your own type of item though.
 
 ### 3. Delegate
 
