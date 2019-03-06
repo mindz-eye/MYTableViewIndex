@@ -46,7 +46,7 @@ open class TableViewIndex : UIControl {
     /// Use resetMinWidth to fall back to default spacing.
     public var minWidth: CGFloat {
         get { return style.minWidth }
-        set { style = style.copy(applyingMinWidth: minWidth) }
+        set { style = style.copy(applyingMinWidth: newValue) }
     }
     
     /// Vertical spacing between the items. Equals to 1 point by default to match system appearance.
