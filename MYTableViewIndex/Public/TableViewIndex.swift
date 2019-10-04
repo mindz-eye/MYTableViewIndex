@@ -336,6 +336,15 @@ open class TableViewIndex : UIControl {
         isHighlighted = false
         cleanupFeedbackGenerator()
     }
+
+    // Prevent iOS 13 modal pan gesture (or really any pan gesture) from firing when touched
+    open override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let _ = gestureRecognizer.self as? UIPanGestureRecognizer {
+            return false
+        } else {
+            return true
+        }
+    }
     
     // MARK: - Haptic Feedback support
     
